@@ -1,55 +1,50 @@
 /** @format */
 
-import React from "react";
-import ReminderList from "./reminder-list";
-import { shallow } from "enzyme";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
+import React from 'react';
+import ReminderList from './reminder-list';
+import { mount, shallow } from 'enzyme';
+import List from '@material-ui/core/List';
+import ListItemText from '@material-ui/core/ListItemText';
+import ReminderItem from '../reminder-item/reminder-item';
 
-describe("Reminder List", () => {
-  it("renders a list", () => {
-    const reminderListWrapper = shallow(<ReminderList />);
-    const list = reminderListWrapper.find(List);
-    expect(list).toHaveLength(1);
-  });
+describe('Reminder List', () => {
+	it('renders a list', () => {
+		const reminderListWrapper = shallow(<ReminderList />);
+		const list = reminderListWrapper.find(List);
+		expect(list).toHaveLength(1);
+	});
 
-  it("renders no ListItem elements if none exist in the reminders list", () => {
-    const reminders = [];
-    const reminderListWrapper = shallow(<ReminderList reminders={reminders} />);
-    const reminderListItems = reminderListWrapper.find(ListItem);
+	it('renders no ReminderItem elements if none exist in the reminders list', () => {
+		const reminders = [];
+		const reminderListWrapper = shallow(<ReminderList reminders={reminders} />);
+		const reminderReminderItems = reminderListWrapper.find(ReminderItem);
 
-    expect(reminderListItems).toHaveLength(0);
-  });
+		expect(reminderReminderItems).toHaveLength(0);
+	});
 
-  it("renders one ListItem elements if only one exist in the reminders list", () => {
-    const reminders = ["take out the trash"];
-    const reminderListWrapper = shallow(<ReminderList reminders={reminders} />);
-    const reminderListItems = reminderListWrapper.find(ListItem);
+	it('renders one ReminderItem elements if only one exist in the reminders list', () => {
+		const reminders = ['take out the trash'];
+		const reminderListWrapper = shallow(<ReminderList reminders={reminders} />);
+		const reminderReminderItems = reminderListWrapper.find(ReminderItem);
 
-    expect(reminderListItems).toHaveLength(1);
-  });
+		expect(reminderReminderItems).toHaveLength(1);
+	});
 
-  it("renders one ListItem elements for each item in the reminders list", () => {
-    const reminders = [
-      "take out the trash",
-      "brush your teeth",
-      "walk the dogs",
-    ];
-    const reminderListWrapper = shallow(<ReminderList reminders={reminders} />);
-    const reminderListItems = reminderListWrapper.find(ListItem);
+	it('renders one ReminderItem elements for each item in the reminders list', () => {
+		const reminders = ['take out the trash', 'brush your teeth', 'walk the dogs'];
+		const reminderListWrapper = shallow(<ReminderList reminders={reminders} />);
+		const reminderReminderItems = reminderListWrapper.find(ReminderItem);
 
-    expect(reminderListItems).toHaveLength(reminders.length);
-  });
+		expect(reminderReminderItems).toHaveLength(reminders.length);
+	});
 
-  it("matches the text for each ListItem in the correct order", () => {
-    const reminders = [
-      "take out the trash",
-      "brush your teeth",
-      "walk the dogs",
-    ];
-    const reminderListWrapper = shallow(<ReminderList reminders={reminders} />);
-    reminderListWrapper.find(ListItem).forEach((node, i) => {
-      expect(node.text()).toEqual(reminders[i]);
-    });
-  });
+	it('renders the correct text for each reminder', () => {
+		const reminders = ['take out the trash', 'brush your teeth', 'walk the dogs'];
+		const reminderListWrapper = mount(<ReminderList reminders={reminders} />);
+		const reminderItems = reminderListWrapper.find(ReminderItem);
+		reminderItems.forEach((item, i) => {
+			const reminderItem = item.find(ListItemText);
+			expect(reminderItem.prop('primary')).toEqual(reminders[i]);
+		});
+	});
 });
