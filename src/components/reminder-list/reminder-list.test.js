@@ -76,6 +76,22 @@ describe('Reminder List', () => {
 		expect(textField).toHaveLength(1);
 	});
 
+	it('the textfield has autocomplete turned off', () => {
+		const reminderListWrapper = shallow(<ReminderList />);
+		const button = reminderListWrapper.find(Button);
+		button.simulate('click');
+		const textField = reminderListWrapper.find(TextField);
+		expect(textField.prop('autoComplete')).toEqual('off');
+	});
+
+	it('the button disappears when clicked', () => {
+		const reminderListWrapper = shallow(<ReminderList />);
+		let button = reminderListWrapper.find(Button);
+		button.simulate('click');
+		button = reminderListWrapper.find(Button);
+		expect(button).toHaveLength(0);
+	});
+
 	it('the text field value matches what has been typed', () => {
 		const reminderListWrapper = shallow(<ReminderList />);
 		const button = reminderListWrapper.find(Button);
@@ -98,6 +114,45 @@ describe('Reminder List', () => {
 		textField.simulate('keypress', { key: 'Enter' });
 		const reminderItem = reminderListWrapper.find(ReminderItem);
 		expect(reminderItem).toHaveLength(1);
+	});
+
+	it('the value of the text field resets when the return key is pressed', () => {
+		const reminderListWrapper = shallow(<ReminderList />);
+		let button = reminderListWrapper.find(Button);
+		button.simulate('click');
+		let textField = reminderListWrapper.find(TextField);
+		const text = 'testing123';
+		textField.simulate('change', { target: { value: text } });
+		textField = reminderListWrapper.find(TextField);
+		textField.simulate('keypress', { key: 'Enter' });
+		const toggleContainer = reminderListWrapper.find('#toggleContainer');
+		expect(toggleContainer.prop('value')).toEqual('');
+	});
+
+	it('the button becomes visible when the return key is pressed', () => {
+		const reminderListWrapper = shallow(<ReminderList />);
+		let button = reminderListWrapper.find(Button);
+		button.simulate('click');
+		let textField = reminderListWrapper.find(TextField);
+		const text = 'testing123';
+		textField.simulate('change', { target: { value: text } });
+		textField = reminderListWrapper.find(TextField);
+		textField.simulate('keypress', { key: 'Enter' });
+		button = reminderListWrapper.find(Button);
+		expect(button).toHaveLength(1);
+	});
+
+	it('the text disappears when the return key is pressed', () => {
+		const reminderListWrapper = shallow(<ReminderList />);
+		let button = reminderListWrapper.find(Button);
+		button.simulate('click');
+		let textField = reminderListWrapper.find(TextField);
+		const text = 'testing123';
+		textField.simulate('change', { target: { value: text } });
+		textField = reminderListWrapper.find(TextField);
+		textField.simulate('keypress', { key: 'Enter' });
+		textField = reminderListWrapper.find(TextField);
+		expect(textField).toHaveLength(0);
 	});
 
 	it('a new reminder cannot be created when the text field is empty', () => {

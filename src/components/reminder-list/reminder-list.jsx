@@ -19,39 +19,45 @@ const ReminderList = (props) => {
 	const [reminders, setReminders] = useState(props.reminders || []);
 	const [textField, setTextField] = useState('');
 	const [toggleInput, setToggleInput] = useState(false);
+
 	return (
 		<div>
-			{toggleInput ? (
-				<TextField
-					id="outlined-basic"
-					onChange={(event) => {
-						setTextField(event.target.value);
-					}}
-					onKeyPress={(event) => {
-						if (event.key === 'Enter' && textField.length > 0) {
-							setReminders([...reminders, textField]);
-						}
-					}}
-					size="small"
-					variant="outlined"
-					value={textField}
-				/>
-			) : null}
 			<List className={classes.root}>
 				{reminders.map((reminder, i) => (
 					<ReminderItem key={i} reminderText={reminder} />
 				))}
 			</List>
-
-			<Button
-				onClick={() => {
-					setToggleInput(!toggleInput);
-				}}
-				variant="outlined"
-				color="primary"
-			>
-				Add Reminder
-			</Button>
+			<div id="toggleContainer" value={textField}>
+				{toggleInput ? (
+					<TextField
+					autoComplete="off"
+						id="outlined-basic"
+						onChange={(event) => {
+							setTextField(event.target.value);
+						}}
+						onKeyPress={(event) => {
+							if (event.key === 'Enter' && textField.length > 0) {
+								setReminders([...reminders, textField]);
+								setTextField('');
+								setToggleInput(false);
+							}
+						}}
+						size="small"
+						variant="outlined"
+						value={textField}
+					/>
+				) : (
+					<Button
+						color="primary"
+						onClick={() => {
+							setToggleInput(true);
+						}}
+						variant="outlined"
+					>
+						Add Reminder
+					</Button>
+				)}
+			</div>
 		</div>
 	);
 };
