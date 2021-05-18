@@ -6,13 +6,11 @@ import { mount, shallow } from 'enzyme';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import MoreHoriz from '@material-ui/icons/MoreHoriz';
+import Info from '@material-ui/icons/InfoOutlined';
 import TextField from '@material-ui/core/TextField';
-import Tooltip from '@material-ui/core/Tooltip';
 
-describe('Reminder Item', () => {
+describe('Reminder', () => {
 	let reminderItemWrapper;
 
 	beforeAll(() => {
@@ -36,9 +34,24 @@ describe('Reminder Item', () => {
 		expect(listItemText.prop('primary')).toEqual(text);
 	});
 
-	it('renders a listItemIcon container for the checkbox and a more options icon', () => {
-		const itemIcon = reminderItemWrapper.find(ListItemIcon);
-		expect(itemIcon).toHaveLength(2);
+	it('renders an action/icon container for the checkbox and info button', () => {
+		const container = reminderItemWrapper.find('#actions');
+		expect(container).toHaveLength(1);
+	});
+
+	it('action/icon container className === actions', () => {
+		const container = reminderItemWrapper.find('#actions');
+		expect(container.prop('className')).toContain('actions');
+	});
+
+	it('renders a checkbox container', () => {
+		const checkboxContainer = reminderItemWrapper.find('#checkbox');
+		expect(checkboxContainer).toHaveLength(1);
+	});
+
+	it('checkbox container className === checkbox', () => {
+		const checkboxContainer = reminderItemWrapper.find('#checkbox');
+		expect(checkboxContainer.prop('className')).toContain('checkbox');
 	});
 
 	it('renders a checkbox', () => {
@@ -51,9 +64,14 @@ describe('Reminder Item', () => {
 		expect(iconButton).toHaveLength(1);
 	});
 
-	it('renders a more options icon', () => {
-		const moreHorizIcon = reminderItemWrapper.find(MoreHoriz);
-		expect(moreHorizIcon).toHaveLength(1);
+	it('renders a the icon button in the small size', () => {
+		const iconButton = reminderItemWrapper.find(IconButton);
+		expect(iconButton.prop('size')).toEqual('small');
+	});
+
+	it('renders an info icon', () => {
+		const info = reminderItemWrapper.find(Info);
+		expect(info).toHaveLength(1);
 	});
 
 	it('checkbox state changes on click', () => {

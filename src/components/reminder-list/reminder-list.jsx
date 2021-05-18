@@ -30,7 +30,7 @@ const ReminderList = (props) => {
 			<div id="toggleContainer" value={textField}>
 				{toggleInput ? (
 					<TextField
-					autoComplete="off"
+						autoComplete="off"
 						id="outlined-basic"
 						onChange={(event) => {
 							setTextField(event.target.value);

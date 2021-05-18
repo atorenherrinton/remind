@@ -1,10 +1,10 @@
 /** @format */
 
 import { configureStore } from '@reduxjs/toolkit';
-import remindersReducer from '../slices/reminders-slice';
+import actionsReducer from '../slices/actions-slice';
 
 export const store = configureStore({
 	reducer: {
-		reminders: remindersReducer,
+		actions: actionsReducer,
 	},
 });

@@ -5,17 +5,23 @@ import { makeStyles } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import MoreHoriz from '@material-ui/icons/MoreHoriz';
+import Info from '@material-ui/icons/InfoOutlined';
 import TextField from '@material-ui/core/TextField';
-import Tooltip from '@material-ui/core/Tooltip';
 
 const useStyles = makeStyles((theme) => ({
 	root: {},
+	actions: {
+		alignItems: 'center',
+		display: 'flex',
+		marginLeft: '4rem',
+	},
+	checkbox: {
+		marginRight: '1rem',
+	},
 }));
 
-const ReminderItem = (props) => {
+const Reminder = (props) => {
 	const classes = useStyles();
 	const [isChecked, setIsChecked] = useState(false);
 	const [isHidden, setIsHidden] = useState(false);
@@ -50,29 +56,27 @@ const ReminderItem = (props) => {
 							primary={reminderText}
 						/>
 					)}
-					<ListItemIcon>
-						<Checkbox
-							onClick={() => {
-								setIsChecked(!isChecked);
-							}}
-							checked={isChecked}
-							edge="end"
-							tabIndex={-1}
-							disableRipple
-						/>
-					</ListItemIcon>
+					<div className={classes.actions} id="actions">
+						<div className={classes.checkbox} id="checkbox">
+							<Checkbox
+								onClick={() => {
+									setIsChecked(!isChecked);
+								}}
+								checked={isChecked}
+								edge="end"
+								tabIndex={-1}
+								disableRipple
+							/>
+						</div>
 
-					<ListItemIcon>
-
-							<IconButton aria-label="more options">
-								<MoreHoriz />
-							</IconButton>
-
-					</ListItemIcon>
+						<IconButton aria-label="more options" size="small">
+							<Info />
+						</IconButton>
+					</div>
 				</ListItem>
 			)}
 		</div>
 	);
 };
 
-export default ReminderItem;
+export default Reminder;
