@@ -1,19 +1,21 @@
 /** @format */
 
 import React from 'react';
-import { shallow } from 'enzyme';
+import { Provider } from 'react-redux';
+import { store } from './app/store';
+import { render, screen } from '@testing-library/react';
 import App from './App';
-import Main from './pages/main/main';
 
 describe('App', () => {
-	let appWrapper;
-
 	beforeAll(() => {
-		appWrapper = shallow(<App />);
+		render(
+			<Provider store={store}>
+				<App />
+			</Provider>
+		);
 	});
 
-	it('renders the main application page', () => {
-		const main = appWrapper.find(Main);
-		expect(main).toHaveLength(1);
+	test('renders the main application page', () => {
+		expect(screen.getAllByRole('main')).toHaveLength(1);
 	});
 });

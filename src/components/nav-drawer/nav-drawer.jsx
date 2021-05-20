@@ -40,16 +40,17 @@ const NavDrawer = (props) => {
 		]
 	);
 	return (
-		<div className={classes.root}>
+		<div className={classes.root} title="navigation-drawer">
 			<Drawer
 				className={classes.drawer}
 				variant="permanent"
 				classes={{
 					paper: classes.drawerPaper,
 				}}
+				role="drawer"
 			>
 				<Toolbar />
-				<div id="navLinkContainer" className={classes.drawerContainer}>
+				<div className={classes.drawerContainer} title="drawerContainer">
 					<List>
 						{listItems.map((listItem, i) => (
 							<NavDrawerListItem key={i} listItemText={listItem.itemText} icon={listItem.icon} />

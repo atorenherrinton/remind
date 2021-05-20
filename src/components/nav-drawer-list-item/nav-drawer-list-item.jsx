@@ -18,8 +18,8 @@ const NavDrawerListItem = ({ listItemText = '', icon = '' }) => {
 
 	return (
 		<div className={classes.root}>
-			<ListItem button>
-				<ListItemIcon icon={icon}>
+			<ListItem button role="listItem">
+				<ListItemIcon icon={icon} role="listItemIcon" title={icon}>
 					{icon === 'Today' ? (
 						<Today />
 					) : icon === 'Schedule' ? (
@@ -28,7 +28,7 @@ const NavDrawerListItem = ({ listItemText = '', icon = '' }) => {
 						<CheckCircle />
 					) : null}
 				</ListItemIcon>
-				<ListItemText primary={listItemText} />
+				<ListItemText primary={listItemText} role="listItemText" />
 			</ListItem>
 		</div>
 	);

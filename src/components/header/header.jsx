@@ -27,7 +27,7 @@ const Header = () => {
 	const classes = useStyles();
 
 	return (
-		<div className={classes.root}>
+		<div className={classes.root} role="header">
 			<AppBar position="static" className={classes.appBar}>
 				<Toolbar>
 					<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">

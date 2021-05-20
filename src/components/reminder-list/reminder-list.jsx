@@ -21,8 +21,8 @@ const ReminderList = (props) => {
 	const [toggleInput, setToggleInput] = useState(false);
 
 	return (
-		<div>
-			<List className={classes.root}>
+		<div title="reminder-list">
+			<List className={classes.root} role="list">
 				{reminders.map((reminder, i) => (
 					<ReminderItem key={i} reminderText={reminder} />
 				))}
@@ -42,6 +42,7 @@ const ReminderList = (props) => {
 								setToggleInput(false);
 							}
 						}}
+						role="textField"
 						size="small"
 						variant="outlined"
 						value={textField}
@@ -52,6 +53,7 @@ const ReminderList = (props) => {
 						onClick={() => {
 							setToggleInput(true);
 						}}
+						role="button"
 						variant="outlined"
 					>
 						Add Reminder

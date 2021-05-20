@@ -75,7 +75,7 @@ describe('Reminder', () => {
 	});
 
 	it('checkbox state changes on click', () => {
-		const reminderItemWrapper = mount(<ReminderItem />);
+		const reminderItemWrapper = shallow(<ReminderItem />);
 		let checkbox = reminderItemWrapper.find(Checkbox);
 		checkbox.simulate('click');
 		checkbox = reminderItemWrapper.find(Checkbox);

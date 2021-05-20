@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const Reminder = (props) => {
+const ReminderItem = (props) => {
 	const classes = useStyles();
 	const [isChecked, setIsChecked] = useState(false);
 	const [isHidden, setIsHidden] = useState(false);
@@ -29,7 +29,7 @@ const Reminder = (props) => {
 	const [toggleInput, setToggleInput] = useState(false);
 
 	return (
-		<div>
+		<div role="reminderItem">
 			{isHidden ? null : (
 				<ListItem>
 					{toggleInput ? (
@@ -54,6 +54,7 @@ const Reminder = (props) => {
 								setToggleInput(true);
 							}}
 							primary={reminderText}
+							role="itemText"
 						/>
 					)}
 					<div className={classes.actions} id="actions">
@@ -69,7 +70,7 @@ const Reminder = (props) => {
 							/>
 						</div>
 
-						<IconButton aria-label="more options" size="small">
+						<IconButton aria-label="more options" role="get-more-options" size="small">
 							<Info />
 						</IconButton>
 					</div>
@@ -79,4 +80,4 @@ const Reminder = (props) => {
 	);
 };
 
-export default Reminder;
+export default ReminderItem;

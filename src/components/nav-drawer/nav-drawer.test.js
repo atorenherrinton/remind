@@ -2,6 +2,7 @@
 
 import React from 'react';
 import NavDrawer from './nav-drawer';
+import { render, screen } from '@testing-library/react';
 import { mount, shallow } from 'enzyme';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -11,26 +12,24 @@ import NavDrawerListItem from '../nav-drawer-list-item/nav-drawer-list-item';
 import Toolbar from '@material-ui/core/Toolbar';
 
 describe('Navigation Drawer', () => {
-	let navDrawerWrapper;
-
-	beforeAll(() => {
-		navDrawerWrapper = shallow(<NavDrawer />);
-	});
-
 	it('renders an drawer', () => {
+		const navDrawerWrapper = shallow(<NavDrawer />);
 		const drawer = navDrawerWrapper.find(Drawer);
 		expect(drawer).toHaveLength(1);
 	});
 
 	it('renders an toolbar', () => {
+		const navDrawerWrapper = shallow(<NavDrawer />);
 		const toolbar = navDrawerWrapper.find(Toolbar);
 		expect(toolbar).toHaveLength(1);
 	});
 	it('renders a navagation link container', () => {
-		const navLinkContainer = navDrawerWrapper.find('#navLinkContainer');
-		expect(navLinkContainer).toHaveLength(1);
+		render(<NavDrawer />);
+		expect(screen.getAllByTitle('drawerContainer')).toHaveLength(1);
 	});
 	it('renders a list', () => {
+		const navDrawerWrapper = shallow(<NavDrawer />);
+
 		const list = navDrawerWrapper.find(List);
 		expect(list).toHaveLength(1);
 	});
@@ -47,11 +46,9 @@ describe('Navigation Drawer', () => {
 			{ itemText: 'Scheduled', icon: 'Schedule' },
 			{ itemText: 'Completed', icon: 'CheckCircle' },
 		];
-		const navDrawerWrapper = mount(<NavDrawer listItems={listItems} />);
-		const navDrawerItems = navDrawerWrapper.find(NavDrawerListItem);
-		navDrawerItems.forEach((item, i) => {
-			const itemText = item.find(ListItemText);
-			expect(itemText.prop('primary')).toEqual(listItems[i].itemText);
+		render(<NavDrawer listItems={listItems} />);
+		listItems.forEach((listItem) => {
+			expect(screen.getByText(listItem.itemText));
 		});
 	});
 
@@ -61,11 +58,9 @@ describe('Navigation Drawer', () => {
 			{ itemText: 'Scheduled', icon: 'Schedule' },
 			{ itemText: 'Completed', icon: 'CheckCircle' },
 		];
-		const navDrawerWrapper = mount(<NavDrawer listItems={listItems} />);
-		const navDrawerItems = navDrawerWrapper.find(NavDrawerListItem);
-		navDrawerItems.forEach((item, i) => {
-			const itemIcon = item.find(ListItemIcon);
-			expect(itemIcon.prop('icon')).toEqual(listItems[i].icon);
+		render(<NavDrawer listItems={listItems} />);
+		listItems.forEach((listItem) => {
+			expect(screen.getByTitle(listItem.icon));
 		});
 	});
 });

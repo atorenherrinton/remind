@@ -1,53 +1,47 @@
 /** @format */
 
 import React from 'react';
-import { render } from 'react-testing-library';
+import { Provider } from 'react-redux';
+import { store } from '../../app/store';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event'
+
 import Main from './main';
-import Header from '../../components/header/header';
-import IconButton from '@material-ui/core/IconButton';
-import ReminderCard from '../../components/reminder-card/reminder-card';
 import ReminderItem from '../../components/reminder-item/reminder-item';
-import ReminderList from '../../components/reminder-list/reminder-list';
-import NavDrawer from '../../components/nav-drawer/nav-drawer';
 
 describe('Main', () => {
-	let mainWrapper;
-
-	beforeAll(() => {
-		mainWrapper = render(<Main />);
+	beforeEach(() => {
+		render(
+			<Provider store={store}>
+				<Main />
+			</Provider>
+		);
 	});
 
-	it('renders a header', () => {
-		const header = mainWrapper.find(Header);
-		expect(header).toHaveLength(1);
+	test('renders a header', () => {
+		expect(screen.getByRole('header'));
 	});
 
-	it('renders a grid container', () => {
-		const gridContainer = mainWrapper.find('#container');
-		expect(gridContainer).toHaveLength(1);
+	test('renders a grid container', () => {
+		expect(screen.getByRole('container'));
 	});
 
-	it('renders two grid items inside the grid row', () => {
-		const gridItem = mainWrapper.find('#item');
-		expect(gridItem).toHaveLength(2);
+	test('renders two grid items inside the grid row', () => {
+		expect(screen.getAllByRole('item')).toHaveLength(2);
 	});
 
-	it('renders a reminder list', () => {
-		const reminderList = mainWrapper.find(ReminderList);
-		expect(reminderList).toHaveLength(1);
+	test('renders a reminder list', () => {
+		expect(screen.getByTitle('reminder-list'));
 	});
 
-	it('renders a navigation drawer', () => {
-		const navDrawer = mainWrapper.find(NavDrawer);
-		expect(navDrawer).toHaveLength(1);
+	test('renders a navigation drawer', () => {
+		expect(screen.getByTitle('navigation-drawer'));
 	});
 
-	it('clicking the info button on a reminder list item opens a reminder card', () => {
+	test('clicking the info button on a reminder list item opens a reminder card', () => {
 		const text = "let's go party!";
-		const reminderItemWrapper = shallow(<ReminderItem reminderText={text} />);
-		const infoButton = reminderItemWrapper.find(IconButton);
-		infoButton.simulate('click');
-		const reminderCard = mainWrapper.find(ReminderCard);
-		expect(reminderCard).toHaveLength(1);
+		render(<ReminderItem reminderText={text} />);
+		userEvent.click(screen.getByRole('get-more-options'));
+		expect(screen.getByTitle('reminder-card'));
 	});
 });

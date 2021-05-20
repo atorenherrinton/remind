@@ -2,10 +2,11 @@
 
 import React from 'react';
 import ReminderList from './reminder-list';
-import { mount, shallow } from 'enzyme';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { shallow } from 'enzyme';
 import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
-import ListItemText from '@material-ui/core/ListItemText';
 import ReminderItem from '../reminder-item/reminder-item';
 import TextField from '@material-ui/core/TextField';
 
@@ -42,11 +43,9 @@ describe('Reminder List', () => {
 
 	it('displays the correct text for each reminder', () => {
 		const reminders = ['take out the trash', 'brush your teeth', 'walk the dogs'];
-		const reminderListWrapper = mount(<ReminderList reminders={reminders} />);
-		const reminderItems = reminderListWrapper.find(ReminderItem);
-		reminderItems.forEach((item, i) => {
-			const reminderItem = item.find(ListItemText);
-			expect(reminderItem.prop('primary')).toEqual(reminders[i]);
+		render(<ReminderList reminders={reminders} />);
+		reminders.forEach((reminder) => {
+			expect(screen.getByText(reminder));
 		});
 	});
 
@@ -156,12 +155,9 @@ describe('Reminder List', () => {
 	});
 
 	it('a new reminder cannot be created when the text field is empty', () => {
-		const reminderListWrapper = mount(<ReminderList />);
-		const button = reminderListWrapper.find(Button);
-		button.simulate('click');
-		const textField = reminderListWrapper.find(TextField);
-		textField.simulate('keypress', { key: 'Enter' });
-		const reminderItem = reminderListWrapper.find(ReminderItem);
-		expect(reminderItem).toHaveLength(0);
+		render(<ReminderList />);
+		userEvent.click(screen.getByRole('button'));
+		userEvent.type(screen.getByRole('textField'), '{enter}');
+		expect(screen.queryAllByRole('reminderItem')).toHaveLength(0);
 	});
 });
