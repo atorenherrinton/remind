@@ -1,150 +1,100 @@
 /** @format */
 
 import React from 'react';
+import { Provider } from 'react-redux';
+import { store } from '../../app/store';
+import { render, screen } from '@testing-library/react';
+import { toHaveStyle } from '@testing-library/jest-dom';
+import userEvent from '@testing-library/user-event';
 import ReminderItem from './reminder-item';
-import { mount, shallow } from 'enzyme';
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Info from '@material-ui/icons/InfoOutlined';
-import TextField from '@material-ui/core/TextField';
 
 describe('Reminder', () => {
-	let reminderItemWrapper;
-
-	beforeAll(() => {
-		reminderItemWrapper = shallow(<ReminderItem />);
+	const text = 'testing testing 123';
+	beforeEach(() => {
+		render(
+			<Provider store={store}>
+				<ReminderItem reminderText={text} />
+			</Provider>
+		);
 	});
 
-	it('renders a listItem', () => {
-		const listItem = reminderItemWrapper.find(ListItem);
-		expect(listItem).toHaveLength(1);
+	test('renders a listItem', () => {
+		expect(screen.getByTitle('reminder-item'));
 	});
 
-	it('renders a listItemText', () => {
-		const listItemText = reminderItemWrapper.find(ListItemText);
-		expect(listItemText).toHaveLength(1);
+	test('renders a listItemText', () => {
+		expect(screen.getByRole('item-text'));
 	});
 
-	it('listItemText contains correct text', () => {
-		const text = "let's go party!";
-		const reminderItemWrapper = shallow(<ReminderItem reminderText={text} />);
-		const listItemText = reminderItemWrapper.find(ListItemText);
-		expect(listItemText.prop('primary')).toEqual(text);
+	test('listItemText contains correct text', () => {
+		expect(screen.getAllByText(text)).toHaveLength(1);
 	});
 
-	it('renders an action/icon container for the checkbox and info button', () => {
-		const container = reminderItemWrapper.find('#actions');
-		expect(container).toHaveLength(1);
+	test('renders an action/icon container for the checkbox and info button', () => {
+		expect(screen.getByTitle('actions-container'));
 	});
 
-	it('action/icon container className === actions', () => {
-		const container = reminderItemWrapper.find('#actions');
-		expect(container.prop('className')).toContain('actions');
+	test('action/icon container className === actions', () => {
+		expect(screen.getByTitle('actions-container')).toHaveStyle(
+			`align-items: center; display: flex; margin-left: 4rem;`
+		);
 	});
 
-	it('renders a checkbox container', () => {
-		const checkboxContainer = reminderItemWrapper.find('#checkbox');
-		expect(checkboxContainer).toHaveLength(1);
+	test('renders a checkbox container', () => {
+		expect(screen.getByTitle('checkbox-container'));
 	});
 
-	it('checkbox container className === checkbox', () => {
-		const checkboxContainer = reminderItemWrapper.find('#checkbox');
-		expect(checkboxContainer.prop('className')).toContain('checkbox');
+	test('checkbox container className === checkbox', () => {
+		expect(screen.getByTitle('checkbox-container')).toHaveStyle(`margin-right: 1rem`);
 	});
 
-	it('renders a checkbox', () => {
-		const checkbox = reminderItemWrapper.find(Checkbox);
-		expect(checkbox).toHaveLength(1);
+	test('renders a checkbox', () => {
+		expect(screen.getByTestId('checkbox'));
 	});
 
-	it('renders a icon button outside of the more options icon', () => {
-		const iconButton = reminderItemWrapper.find(IconButton);
-		expect(iconButton).toHaveLength(1);
+	test('renders a icon button outside of the more options icon', () => {
+		expect(screen.getByRole('get-more-options'));
 	});
 
-	it('renders a the icon button in the small size', () => {
-		const iconButton = reminderItemWrapper.find(IconButton);
-		expect(iconButton.prop('size')).toEqual('small');
+	test('renders a the icon button in the small size', () => {
+		expect(screen.getByRole('get-more-options')).toHaveClass('MuiIconButton-sizeSmall');
 	});
 
-	it('renders an info icon', () => {
-		const info = reminderItemWrapper.find(Info);
-		expect(info).toHaveLength(1);
+	test('renders an info icon', () => {
+		expect(screen.getByTitle('info'));
 	});
 
-	it('checkbox state changes on click', () => {
-		const reminderItemWrapper = shallow(<ReminderItem />);
-		let checkbox = reminderItemWrapper.find(Checkbox);
-		checkbox.simulate('click');
-		checkbox = reminderItemWrapper.find(Checkbox);
-		expect(checkbox.prop('checked')).toEqual(true);
+	test('checkbox state changes on click', () => {
+		userEvent.click(screen.getByTestId('checkbox'));
+		expect(screen.getByTestId('checkbox')).toHaveClass('Mui-checked');
 	});
 
 	// the list item text is converted into an input when clicked
 
-	it('the listItemText disappears', () => {
-		const text = "let's go party!";
-		const reminderItemWrapper = shallow(<ReminderItem reminderText={text} />);
-		let itemText = reminderItemWrapper.find(ListItemText);
-		itemText.simulate('click');
-		itemText = reminderItemWrapper.find(ListItemText);
-		expect(itemText).toHaveLength(0);
+	test('the listItemText disappears', () => {
+		userEvent.click(screen.getByRole('item-text'));
+		expect(screen.queryByRole('item-text')).not.toBeInTheDocument();
 	});
 
-	it('an textField appears', () => {
-		const text = "let's go party!";
-		const reminderItemWrapper = shallow(<ReminderItem reminderText={text} />);
-		const itemText = reminderItemWrapper.find(ListItemText);
-		itemText.simulate('click');
-		const textField = reminderItemWrapper.find(TextField);
-		expect(textField).toHaveLength(1);
+	test('an textField appears', () => {
+		userEvent.click(screen.getByRole('item-text'));
+		expect(screen.getByRole('text-field')).toBeInTheDocument();
 	});
 
-	it('the textField matches the item text', () => {
-		const text = "let's go party!";
-		const reminderItemWrapper = shallow(<ReminderItem reminderText={text} />);
-		const itemText = reminderItemWrapper.find(ListItemText);
-		itemText.simulate('click');
-		const textField = reminderItemWrapper.find(TextField);
-		expect(textField.prop('value')).toEqual(text);
+	test('the textField matches the item text', () => {
+		userEvent.click(screen.getByRole('item-text'));
+		expect(screen.getByDisplayValue(text));
 	});
 
-	it('the reminder is deleted/hidden if the return key is pressed and the textField is empty', () => {
-		const text = "let's go party!";
-		const reminderItemWrapper = shallow(<ReminderItem reminderText={text} />);
-		let itemText = reminderItemWrapper.find(ListItemText);
-		itemText.simulate('click');
-		let textField = reminderItemWrapper.find(TextField);
-		textField.simulate('change', { target: { value: '' } });
-		textField = reminderItemWrapper.find(TextField);
-		textField.simulate('keypress', { key: 'Enter' });
-		const listItem = reminderItemWrapper.find(ListItem);
-		expect(listItem).toHaveLength(0);
+	test('the reminder is deleted/hidden if the return key is pressed and the textField is empty', () => {
+		userEvent.click(screen.getByRole('item-text'));
+		userEvent.type(screen.getByDisplayValue(text), '{selectall}{del}{enter}');
+		expect(screen.queryByRole('list-item')).not.toBeInTheDocument();
 	});
 
-	it('the listItemText can be updated from the textField', () => {
-		const text = "let's go party!";
-		const reminderItemWrapper = shallow(<ReminderItem reminderText={text} />);
-		let itemText = reminderItemWrapper.find(ListItemText);
-		itemText.simulate('click');
-		const textField = reminderItemWrapper.find(TextField);
-		const newText = 'testing123';
-		textField.simulate('change', { target: { value: newText } });
-		textField.simulate('keypress', { key: 'Enter' });
-		itemText = reminderItemWrapper.find(ListItemText);
-		expect(itemText.prop('primary')).toEqual(newText);
-	});
-
-	it('the textField turns into listItemText when return key is pressed', () => {
-		const text = "let's go party!";
-		const reminderItemWrapper = shallow(<ReminderItem reminderText={text} />);
-		let itemText = reminderItemWrapper.find(ListItemText);
-		itemText.simulate('click');
-		const textField = reminderItemWrapper.find(TextField);
-		textField.simulate('keypress', { key: 'Enter' });
-		itemText = reminderItemWrapper.find(ListItemText);
-		expect(itemText).toHaveLength(1);
+	test('the listItemText can be updated from the textField', () => {
+		userEvent.click(screen.getByRole('item-text'));
+		userEvent.type(screen.getByDisplayValue(text), '{selectall}{del}Hello everyone!{enter}');
+		expect(screen.getByRole('item-text')).toHaveTextContent('Hello everyone!');
 	});
 });

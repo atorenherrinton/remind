@@ -1,6 +1,8 @@
 /** @format */
 
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setToggleMoreOptions } from '../../slices/actions-slice';
 import { makeStyles } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
@@ -23,13 +25,14 @@ const useStyles = makeStyles((theme) => ({
 
 const ReminderItem = (props) => {
 	const classes = useStyles();
+	const dispatch = useDispatch();
 	const [isChecked, setIsChecked] = useState(false);
 	const [isHidden, setIsHidden] = useState(false);
 	const [reminderText, setReminderText] = useState(props.reminderText || '');
 	const [toggleInput, setToggleInput] = useState(false);
 
 	return (
-		<div role="reminderItem">
+		<div title="reminder-item">
 			{isHidden ? null : (
 				<ListItem>
 					{toggleInput ? (
@@ -46,6 +49,7 @@ const ReminderItem = (props) => {
 									}
 								}
 							}}
+							role="text-field"
 							value={reminderText}
 						/>
 					) : (
@@ -54,24 +58,32 @@ const ReminderItem = (props) => {
 								setToggleInput(true);
 							}}
 							primary={reminderText}
-							role="itemText"
+							role="item-text"
 						/>
 					)}
-					<div className={classes.actions} id="actions">
-						<div className={classes.checkbox} id="checkbox">
+					<div className={classes.actions} title="actions-container">
+						<div className={classes.checkbox} title="checkbox-container">
 							<Checkbox
+								checked={isChecked}
+								data-testid="checkbox"
+								disableRipple
+								edge="end"
 								onClick={() => {
 									setIsChecked(!isChecked);
 								}}
-								checked={isChecked}
-								edge="end"
 								tabIndex={-1}
-								disableRipple
 							/>
 						</div>
 
-						<IconButton aria-label="more options" role="get-more-options" size="small">
-							<Info />
+						<IconButton
+							aria-label="more options"
+							onClick={() => {
+								dispatch(setToggleMoreOptions());
+							}}
+							role="get-more-options"
+							size="small"
+						>
+							<Info title="info" />
 						</IconButton>
 					</div>
 				</ListItem>

@@ -1,163 +1,187 @@
 /** @format */
 
 import React from 'react';
-import ReminderList from './reminder-list';
+import { Provider } from 'react-redux';
+import { store } from '../../app/store';
 import { render, screen } from '@testing-library/react';
+import { toHaveStyle } from '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
-import { shallow } from 'enzyme';
-import Button from '@material-ui/core/Button';
-import List from '@material-ui/core/List';
-import ReminderItem from '../reminder-item/reminder-item';
-import TextField from '@material-ui/core/TextField';
+import ReminderList from './reminder-list';
 
 describe('Reminder List', () => {
-	it('renders a list', () => {
-		const reminderListWrapper = shallow(<ReminderList />);
-		const list = reminderListWrapper.find(List);
-		expect(list).toHaveLength(1);
+	test('renders a list', () => {
+		render(
+			<Provider store={store}>
+				<ReminderList />
+			</Provider>
+		);
+		expect(screen.getByRole('list'));
 	});
 
-	it('renders no ReminderItem elements if none exist in the reminders list', () => {
+	test('renders no ReminderItem elements if none exist in the reminders list', () => {
 		const reminders = [];
-		const reminderListWrapper = shallow(<ReminderList reminders={reminders} />);
-		const reminderReminderItems = reminderListWrapper.find(ReminderItem);
-
-		expect(reminderReminderItems).toHaveLength(0);
+		render(
+			<Provider store={store}>
+				<ReminderList reminders={reminders} />
+			</Provider>
+		);
+		expect(screen.queryByTitle('reminder-item')).not.toBeInTheDocument();
 	});
 
-	it('renders one ReminderItem elements if only one exist in the reminders list', () => {
+	test('renders one ReminderItem elements if only one exist in the reminders list', () => {
 		const reminders = ['take out the trash'];
-		const reminderListWrapper = shallow(<ReminderList reminders={reminders} />);
-		const reminderReminderItems = reminderListWrapper.find(ReminderItem);
-
-		expect(reminderReminderItems).toHaveLength(1);
+		render(
+			<Provider store={store}>
+				<ReminderList reminders={reminders} />
+			</Provider>
+		);
+		expect(screen.getAllByTitle('reminder-item')).toHaveLength(1);
 	});
 
-	it('renders one ReminderItem elements for each item in the reminders list', () => {
+	test('renders one ReminderItem elements for each item in the reminders list', () => {
 		const reminders = ['take out the trash', 'brush your teeth', 'walk the dogs'];
-		const reminderListWrapper = shallow(<ReminderList reminders={reminders} />);
-		const reminderReminderItems = reminderListWrapper.find(ReminderItem);
-
-		expect(reminderReminderItems).toHaveLength(reminders.length);
+		render(
+			<Provider store={store}>
+				<ReminderList reminders={reminders} />
+			</Provider>
+		);
+		expect(screen.getAllByTitle('reminder-item')).toHaveLength(reminders.length);
 	});
 
-	it('displays the correct text for each reminder', () => {
+	test('displays the correct text for each reminder', () => {
 		const reminders = ['take out the trash', 'brush your teeth', 'walk the dogs'];
-		render(<ReminderList reminders={reminders} />);
+		render(
+			<Provider store={store}>
+				<ReminderList reminders={reminders} />
+			</Provider>
+		);
 		reminders.forEach((reminder) => {
 			expect(screen.getByText(reminder));
 		});
 	});
 
-	it('renders a button', () => {
-		const reminderListWrapper = shallow(<ReminderList />);
-		const button = reminderListWrapper.find(Button);
-		expect(button).toHaveLength(1);
+	test('renders a button', () => {
+		render(
+			<Provider store={store}>
+				<ReminderList />
+			</Provider>
+		);
+		expect(screen.getByRole('button'));
 	});
 
-	it('the button text displays Add Reminder', () => {
-		const reminderListWrapper = shallow(<ReminderList />);
-		const button = reminderListWrapper.find(Button);
-		expect(button.text()).toEqual('Add Reminder');
+	test('the button text displays Add Reminder', () => {
+		render(
+			<Provider store={store}>
+				<ReminderList />
+			</Provider>
+		);
+		expect(screen.getByRole('button')).toHaveTextContent('Add Reminder');
 	});
 
-	it('renders no text field when component first renders', () => {
-		const reminderListWrapper = shallow(<ReminderList />);
-		const textField = reminderListWrapper.find(TextField);
-		expect(textField).toHaveLength(0);
+	test('renders no text field when component first renders', () => {
+		render(
+			<Provider store={store}>
+				<ReminderList />
+			</Provider>
+		);
+		expect(screen.queryByRole('text-field')).not.toBeInTheDocument();
 	});
 
-	it('renders a text field when button is clicked', () => {
-		const reminderListWrapper = shallow(<ReminderList />);
-		const button = reminderListWrapper.find(Button);
-		button.simulate('click');
-		const textField = reminderListWrapper.find(TextField);
-		expect(textField).toHaveLength(1);
-	});
-
-	it('the textfield has autocomplete turned off', () => {
-		const reminderListWrapper = shallow(<ReminderList />);
-		const button = reminderListWrapper.find(Button);
-		button.simulate('click');
-		const textField = reminderListWrapper.find(TextField);
-		expect(textField.prop('autoComplete')).toEqual('off');
-	});
-
-	it('the button disappears when clicked', () => {
-		const reminderListWrapper = shallow(<ReminderList />);
-		let button = reminderListWrapper.find(Button);
-		button.simulate('click');
-		button = reminderListWrapper.find(Button);
-		expect(button).toHaveLength(0);
-	});
-
-	it('the text field value matches what has been typed', () => {
-		const reminderListWrapper = shallow(<ReminderList />);
-		const button = reminderListWrapper.find(Button);
-		button.simulate('click');
-		let textField = reminderListWrapper.find(TextField);
-		const text = 'testing123';
-		textField.simulate('change', { target: { value: text } });
-		textField = reminderListWrapper.find(TextField);
-		expect(textField.prop('value')).toEqual(text);
-	});
-
-	it('a new reminder is created when the return key is pressed', () => {
-		const reminderListWrapper = shallow(<ReminderList />);
-		const button = reminderListWrapper.find(Button);
-		button.simulate('click');
-		let textField = reminderListWrapper.find(TextField);
-		const text = 'testing123';
-		textField.simulate('change', { target: { value: text } });
-		textField = reminderListWrapper.find(TextField);
-		textField.simulate('keypress', { key: 'Enter' });
-		const reminderItem = reminderListWrapper.find(ReminderItem);
-		expect(reminderItem).toHaveLength(1);
-	});
-
-	it('the value of the text field resets when the return key is pressed', () => {
-		const reminderListWrapper = shallow(<ReminderList />);
-		let button = reminderListWrapper.find(Button);
-		button.simulate('click');
-		let textField = reminderListWrapper.find(TextField);
-		const text = 'testing123';
-		textField.simulate('change', { target: { value: text } });
-		textField = reminderListWrapper.find(TextField);
-		textField.simulate('keypress', { key: 'Enter' });
-		const toggleContainer = reminderListWrapper.find('#toggleContainer');
-		expect(toggleContainer.prop('value')).toEqual('');
-	});
-
-	it('the button becomes visible when the return key is pressed', () => {
-		const reminderListWrapper = shallow(<ReminderList />);
-		let button = reminderListWrapper.find(Button);
-		button.simulate('click');
-		let textField = reminderListWrapper.find(TextField);
-		const text = 'testing123';
-		textField.simulate('change', { target: { value: text } });
-		textField = reminderListWrapper.find(TextField);
-		textField.simulate('keypress', { key: 'Enter' });
-		button = reminderListWrapper.find(Button);
-		expect(button).toHaveLength(1);
-	});
-
-	it('the text disappears when the return key is pressed', () => {
-		const reminderListWrapper = shallow(<ReminderList />);
-		let button = reminderListWrapper.find(Button);
-		button.simulate('click');
-		let textField = reminderListWrapper.find(TextField);
-		const text = 'testing123';
-		textField.simulate('change', { target: { value: text } });
-		textField = reminderListWrapper.find(TextField);
-		textField.simulate('keypress', { key: 'Enter' });
-		textField = reminderListWrapper.find(TextField);
-		expect(textField).toHaveLength(0);
-	});
-
-	it('a new reminder cannot be created when the text field is empty', () => {
-		render(<ReminderList />);
+	test('renders a text field when button is clicked', () => {
+		render(
+			<Provider store={store}>
+				<ReminderList />
+			</Provider>
+		);
 		userEvent.click(screen.getByRole('button'));
-		userEvent.type(screen.getByRole('textField'), '{enter}');
-		expect(screen.queryAllByRole('reminderItem')).toHaveLength(0);
+		expect(screen.queryByRole('text-field')).toBeInTheDocument();
 	});
+
+	test('the textfield has autocomplete turned off', () => {
+		render(
+			<Provider store={store}>
+				<ReminderList />
+			</Provider>
+		);
+		userEvent.click(screen.getByRole('button'));
+		expect(screen.getByDisplayValue('').autocomplete).toEqual('off');
+	});
+
+	// test('the button disappears when clicked', () => {
+	// 	const reminderListWrapper = shallow(<ReminderList />);
+	// 	let button = reminderListWrapper.find(Button);
+	// 	button.simulate('click');
+	// 	button = reminderListWrapper.find(Button);
+	// 	expect(button).toHaveLength(0);
+	// });
+
+	// test('the text field value matches what has been typed', () => {
+	// 	const reminderListWrapper = shallow(<ReminderList />);
+	// 	const button = reminderListWrapper.find(Button);
+	// 	button.simulate('click');
+	// 	let textField = reminderListWrapper.find(TextField);
+	// 	const text = 'testing123';
+	// 	textField.simulate('change', { target: { value: text } });
+	// 	textField = reminderListWrapper.find(TextField);
+	// 	expect(textField.prop('value')).toEqual(text);
+	// });
+
+	// test('a new reminder is created when the return key is pressed', () => {
+	// 	const reminderListWrapper = shallow(<ReminderList />);
+	// 	const button = reminderListWrapper.find(Button);
+	// 	button.simulate('click');
+	// 	let textField = reminderListWrapper.find(TextField);
+	// 	const text = 'testing123';
+	// 	textField.simulate('change', { target: { value: text } });
+	// 	textField = reminderListWrapper.find(TextField);
+	// 	textField.simulate('keypress', { key: 'Enter' });
+	// 	const reminderItem = reminderListWrapper.find(ReminderItem);
+	// 	expect(reminderItem).toHaveLength(1);
+	// });
+
+	// test('the value of the text field resets when the return key is pressed', () => {
+	// 	const reminderListWrapper = shallow(<ReminderList />);
+	// 	let button = reminderListWrapper.find(Button);
+	// 	button.simulate('click');
+	// 	let textField = reminderListWrapper.find(TextField);
+	// 	const text = 'testing123';
+	// 	textField.simulate('change', { target: { value: text } });
+	// 	textField = reminderListWrapper.find(TextField);
+	// 	textField.simulate('keypress', { key: 'Enter' });
+	// 	const toggleContainer = reminderListWrapper.find('#toggleContainer');
+	// 	expect(toggleContainer.prop('value')).toEqual('');
+	// });
+
+	// test('the button becomes visible when the return key is pressed', () => {
+	// 	const reminderListWrapper = shallow(<ReminderList />);
+	// 	let button = reminderListWrapper.find(Button);
+	// 	button.simulate('click');
+	// 	let textField = reminderListWrapper.find(TextField);
+	// 	const text = 'testing123';
+	// 	textField.simulate('change', { target: { value: text } });
+	// 	textField = reminderListWrapper.find(TextField);
+	// 	textField.simulate('keypress', { key: 'Enter' });
+	// 	button = reminderListWrapper.find(Button);
+	// 	expect(button).toHaveLength(1);
+	// });
+
+	// test('the text disappears when the return key is pressed', () => {
+	// 	const reminderListWrapper = shallow(<ReminderList />);
+	// 	let button = reminderListWrapper.find(Button);
+	// 	button.simulate('click');
+	// 	let textField = reminderListWrapper.find(TextField);
+	// 	const text = 'testing123';
+	// 	textField.simulate('change', { target: { value: text } });
+	// 	textField = reminderListWrapper.find(TextField);
+	// 	textField.simulate('keypress', { key: 'Enter' });
+	// 	textField = reminderListWrapper.find(TextField);
+	// 	expect(textField).toHaveLength(0);
+	// });
+
+	// test('a new reminder cannot be created when the text field is empty', () => {
+	// 	render(<ReminderList />);
+	// 	userEvent.click(screen.getByRole('button'));
+	// 	userEvent.type(screen.getByRole('textField'), '{enter}');
+	// 	expect(screen.queryAllByRole('reminderItem')).toHaveLength(0);
+	// });
 });

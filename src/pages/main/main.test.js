@@ -4,8 +4,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { store } from '../../app/store';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event'
-
+import userEvent from '@testing-library/user-event';
 import Main from './main';
 import ReminderItem from '../../components/reminder-item/reminder-item';
 
@@ -19,7 +18,7 @@ describe('Main', () => {
 	});
 
 	test('renders a header', () => {
-		expect(screen.getByRole('header'));
+		expect(screen.getByTitle('header'));
 	});
 
 	test('renders a grid container', () => {
@@ -40,7 +39,11 @@ describe('Main', () => {
 
 	test('clicking the info button on a reminder list item opens a reminder card', () => {
 		const text = "let's go party!";
-		render(<ReminderItem reminderText={text} />);
+		render(
+			<Provider store={store}>
+				<ReminderItem reminderText={text} />
+			</Provider>
+		);
 		userEvent.click(screen.getByRole('get-more-options'));
 		expect(screen.getByTitle('reminder-card'));
 	});

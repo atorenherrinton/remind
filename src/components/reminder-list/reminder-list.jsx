@@ -42,7 +42,7 @@ const ReminderList = (props) => {
 								setToggleInput(false);
 							}
 						}}
-						role="textField"
+						role="text-field"
 						size="small"
 						variant="outlined"
 						value={textField}
