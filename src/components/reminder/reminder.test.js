@@ -6,14 +6,14 @@ import { store } from '../../app/store';
 import { render, screen } from '@testing-library/react';
 import { toHaveStyle } from '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
-import ReminderItem from './reminder-item';
+import Reminder from '../reminder/reminder';
 
 describe('Reminder', () => {
 	const text = 'testing testing 123';
 	beforeEach(() => {
 		render(
 			<Provider store={store}>
-				<ReminderItem reminderText={text} />
+				<Reminder reminderText={text} />
 			</Provider>
 		);
 	});
@@ -96,5 +96,10 @@ describe('Reminder', () => {
 		userEvent.click(screen.getByRole('item-text'));
 		userEvent.type(screen.getByDisplayValue(text), '{selectall}{del}Hello everyone!{enter}');
 		expect(screen.getByRole('item-text')).toHaveTextContent('Hello everyone!');
+	});
+
+	test('clicking the info button on a reminder list item expands it into a card', () => {
+		userEvent.click(screen.getByRole('get-more-options'));
+		expect(screen.getByTitle('reminder-card'));
 	});
 });

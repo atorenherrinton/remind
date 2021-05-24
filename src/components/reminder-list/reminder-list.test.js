@@ -188,14 +188,15 @@ describe('Reminder List', () => {
 		userEvent.type(screen.getByRole('textbox'), '{enter}');
 		expect(screen.queryByTitle('reminder-item')).not.toBeInTheDocument();
 	});
-	test('clicking the info button on a reminder list item changes it into a reminder card', () => {
-		const reminders = ['take out the trash'];
+
+	test('clicking the info button on a reminder item renders only 1 card', () => {
+		const reminders = ['take out the trash', 'brush your teeth', 'walk the dogs'];
 		render(
 			<Provider store={store}>
 				<ReminderList reminders={reminders} />
 			</Provider>
 		);
-		userEvent.click(screen.getByRole('get-more-options'));
-		expect(screen.getByTitle('reminder-card'));
+		userEvent.click(screen.getAllByRole('get-more-options')[0]);
+		expect(screen.getAllByTitle('reminder-card')).toHaveLength(1);
 	});
 });

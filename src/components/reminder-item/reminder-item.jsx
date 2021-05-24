@@ -10,7 +10,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Info from '@material-ui/icons/InfoOutlined';
 import TextField from '@material-ui/core/TextField';
-import { colors } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
 	root: {},
@@ -79,7 +78,7 @@ const ReminderItem = (props) => {
 						<IconButton
 							aria-label="more options"
 							onClick={() => {
-								dispatch(setToggleMoreOptions());
+								dispatch(setToggleMoreOptions(props.index));
 							}}
 							role="get-more-options"
 							size="small"

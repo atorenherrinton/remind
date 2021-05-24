@@ -6,15 +6,15 @@ export const remindersSlice = createSlice({
 	name: 'reminders',
 	initialState: {
 		reminders: [],
-		toggleMoreOptions: false,
+		toggleMoreOptions: -1,
 	},
 	// The `reducers` field lets us define reducers and generate associated actions
 	reducers: {
 		setReminders: (state, action) => {
 			state.reminders = [...state.reminders, action.payload];
 		},
-		setToggleMoreOptions: (state) => {
-			state.toggleMoreOptions = !state.toggleMoreOptions;
+		setToggleMoreOptions: (state, action) => {
+			state.toggleMoreOptions = action.payload;
 		},
 	},
 });

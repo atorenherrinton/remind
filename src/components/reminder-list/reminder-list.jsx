@@ -24,7 +24,7 @@ const ReminderList = (props) => {
 		<div title="reminder-list">
 			<List className={classes.root} role="list">
 				{reminders.map((reminder, i) => (
-					<Reminder key={i} reminderText={reminder} />
+					<Reminder key={i} index={i} reminderText={reminder} />
 				))}
 			</List>
 			{toggleInput ? (

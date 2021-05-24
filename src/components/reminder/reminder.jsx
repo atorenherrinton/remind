@@ -10,11 +10,7 @@ const Reminder = (props) => {
 	const toggleMoreOptions = useSelector(selectToggleMoreOptions);
 	return (
 		<div title="reminder">
-			{toggleMoreOptions ? (
-				<ReminderCard reminderText={props.reminderText} />
-			) : (
-				<ReminderItem reminderText={props.reminderText} />
-			)}
+			{toggleMoreOptions === props.index ? <ReminderCard {...props} /> : <ReminderItem {...props} />}
 		</div>
 	);
 };
