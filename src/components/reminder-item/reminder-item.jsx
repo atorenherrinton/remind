@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setToggleMoreOptions } from '../../slices/actions-slice';
+import { setToggleMoreOptions } from '../../slices/reminders-slice';
 import { makeStyles } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
@@ -10,6 +10,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Info from '@material-ui/icons/InfoOutlined';
 import TextField from '@material-ui/core/TextField';
+import { colors } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
 	root: {},

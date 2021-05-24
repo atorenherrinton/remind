@@ -1,7 +1,5 @@
 /** @format */
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { selectToggleMoreOptions } from '../../slices/actions-slice';
 import Grid from '@material-ui/core/Grid';
 import Header from '../../components/header/header';
 import NavDrawer from '../../components/nav-drawer/nav-drawer';
@@ -9,7 +7,6 @@ import ReminderCard from '../../components/reminder-card/reminder-card';
 import ReminderList from '../../components/reminder-list/reminder-list';
 
 const Main = () => {
-	const toggleMoreOptions = useSelector(selectToggleMoreOptions);
 	return (
 		<div role="main">
 			<Header />
@@ -18,7 +15,7 @@ const Main = () => {
 					<NavDrawer title="navigation-drawer" />
 				</Grid>
 				<Grid item role="item">
-					{toggleMoreOptions ? <ReminderCard /> : <ReminderList />}
+					<ReminderList />
 				</Grid>
 			</Grid>
 		</div>

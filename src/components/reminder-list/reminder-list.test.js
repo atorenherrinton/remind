@@ -4,7 +4,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { store } from '../../app/store';
 import { render, screen } from '@testing-library/react';
-import { toHaveStyle } from '@testing-library/jest-dom';
+import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import ReminderList from './reminder-list';
 
@@ -84,7 +84,7 @@ describe('Reminder List', () => {
 				<ReminderList />
 			</Provider>
 		);
-		expect(screen.queryByRole('text-field')).not.toBeInTheDocument();
+		expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
 	});
 
 	test('renders a text field when button is clicked', () => {
@@ -94,7 +94,7 @@ describe('Reminder List', () => {
 			</Provider>
 		);
 		userEvent.click(screen.getByRole('button'));
-		expect(screen.queryByRole('text-field')).toBeInTheDocument();
+		expect(screen.queryByRole('textbox')).toBeInTheDocument();
 	});
 
 	test('the textfield has autocomplete turned off', () => {
@@ -104,84 +104,98 @@ describe('Reminder List', () => {
 			</Provider>
 		);
 		userEvent.click(screen.getByRole('button'));
-		expect(screen.getByDisplayValue('').autocomplete).toEqual('off');
+		expect(screen.getByRole('textbox').autocomplete).toEqual('off');
 	});
 
-	// test('the button disappears when clicked', () => {
-	// 	const reminderListWrapper = shallow(<ReminderList />);
-	// 	let button = reminderListWrapper.find(Button);
-	// 	button.simulate('click');
-	// 	button = reminderListWrapper.find(Button);
-	// 	expect(button).toHaveLength(0);
-	// });
+	test('the button disappears when clicked', () => {
+		render(
+			<Provider store={store}>
+				<ReminderList />
+			</Provider>
+		);
+		userEvent.click(screen.getByRole('button'));
+		expect(screen.queryByRole('button')).not.toBeInTheDocument();
+	});
 
-	// test('the text field value matches what has been typed', () => {
-	// 	const reminderListWrapper = shallow(<ReminderList />);
-	// 	const button = reminderListWrapper.find(Button);
-	// 	button.simulate('click');
-	// 	let textField = reminderListWrapper.find(TextField);
-	// 	const text = 'testing123';
-	// 	textField.simulate('change', { target: { value: text } });
-	// 	textField = reminderListWrapper.find(TextField);
-	// 	expect(textField.prop('value')).toEqual(text);
-	// });
+	test('the text field value matches what has been typed', () => {
+		render(
+			<Provider store={store}>
+				<ReminderList />
+			</Provider>
+		);
+		userEvent.click(screen.getByRole('button'));
+		const test = 'testing123';
+		userEvent.type(screen.getByRole('textbox'), test);
+		expect(screen.getByRole('textbox')).toHaveDisplayValue(test);
+	});
 
-	// test('a new reminder is created when the return key is pressed', () => {
-	// 	const reminderListWrapper = shallow(<ReminderList />);
-	// 	const button = reminderListWrapper.find(Button);
-	// 	button.simulate('click');
-	// 	let textField = reminderListWrapper.find(TextField);
-	// 	const text = 'testing123';
-	// 	textField.simulate('change', { target: { value: text } });
-	// 	textField = reminderListWrapper.find(TextField);
-	// 	textField.simulate('keypress', { key: 'Enter' });
-	// 	const reminderItem = reminderListWrapper.find(ReminderItem);
-	// 	expect(reminderItem).toHaveLength(1);
-	// });
+	test('a new reminder is created when the return key is pressed', () => {
+		render(
+			<Provider store={store}>
+				<ReminderList />
+			</Provider>
+		);
+		userEvent.click(screen.getByRole('button'));
+		const test = 'testing123';
+		userEvent.type(screen.getByRole('textbox'), test + '{enter}');
+		expect(screen.getByRole('item-text'));
+	});
 
-	// test('the value of the text field resets when the return key is pressed', () => {
-	// 	const reminderListWrapper = shallow(<ReminderList />);
-	// 	let button = reminderListWrapper.find(Button);
-	// 	button.simulate('click');
-	// 	let textField = reminderListWrapper.find(TextField);
-	// 	const text = 'testing123';
-	// 	textField.simulate('change', { target: { value: text } });
-	// 	textField = reminderListWrapper.find(TextField);
-	// 	textField.simulate('keypress', { key: 'Enter' });
-	// 	const toggleContainer = reminderListWrapper.find('#toggleContainer');
-	// 	expect(toggleContainer.prop('value')).toEqual('');
-	// });
+	test('the value of the text field resets when the return key is pressed', () => {
+		render(
+			<Provider store={store}>
+				<ReminderList />
+			</Provider>
+		);
+		userEvent.click(screen.getByRole('button'));
+		const test = 'testing123';
+		userEvent.type(screen.getByRole('textbox'), test + '{enter}');
+		userEvent.click(screen.getByRole('button'));
+		expect(screen.getByRole('textbox')).toHaveDisplayValue('');
+	});
 
-	// test('the button becomes visible when the return key is pressed', () => {
-	// 	const reminderListWrapper = shallow(<ReminderList />);
-	// 	let button = reminderListWrapper.find(Button);
-	// 	button.simulate('click');
-	// 	let textField = reminderListWrapper.find(TextField);
-	// 	const text = 'testing123';
-	// 	textField.simulate('change', { target: { value: text } });
-	// 	textField = reminderListWrapper.find(TextField);
-	// 	textField.simulate('keypress', { key: 'Enter' });
-	// 	button = reminderListWrapper.find(Button);
-	// 	expect(button).toHaveLength(1);
-	// });
+	test('the button becomes visible when the return key is pressed', () => {
+		render(
+			<Provider store={store}>
+				<ReminderList />
+			</Provider>
+		);
+		userEvent.click(screen.getByRole('button'));
+		const test = 'testing123';
+		userEvent.type(screen.getByRole('textbox'), test + '{enter}');
+		expect(screen.getAllByRole('button')).toHaveLength(1);
+	});
 
-	// test('the text disappears when the return key is pressed', () => {
-	// 	const reminderListWrapper = shallow(<ReminderList />);
-	// 	let button = reminderListWrapper.find(Button);
-	// 	button.simulate('click');
-	// 	let textField = reminderListWrapper.find(TextField);
-	// 	const text = 'testing123';
-	// 	textField.simulate('change', { target: { value: text } });
-	// 	textField = reminderListWrapper.find(TextField);
-	// 	textField.simulate('keypress', { key: 'Enter' });
-	// 	textField = reminderListWrapper.find(TextField);
-	// 	expect(textField).toHaveLength(0);
-	// });
+	test('the text field disappears when the return key is pressed', () => {
+		render(
+			<Provider store={store}>
+				<ReminderList />
+			</Provider>
+		);
+		userEvent.click(screen.getByRole('button'));
+		const test = 'testing123';
+		userEvent.type(screen.getByRole('textbox'), test + '{enter}');
+		expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+	});
 
-	// test('a new reminder cannot be created when the text field is empty', () => {
-	// 	render(<ReminderList />);
-	// 	userEvent.click(screen.getByRole('button'));
-	// 	userEvent.type(screen.getByRole('textField'), '{enter}');
-	// 	expect(screen.queryAllByRole('reminderItem')).toHaveLength(0);
-	// });
+	test('a new reminder cannot be created when the text field is empty', () => {
+		render(
+			<Provider store={store}>
+				<ReminderList />
+			</Provider>
+		);
+		userEvent.click(screen.getByRole('button'));
+		userEvent.type(screen.getByRole('textbox'), '{enter}');
+		expect(screen.queryByTitle('reminder-item')).not.toBeInTheDocument();
+	});
+	test('clicking the info button on a reminder list item changes it into a reminder card', () => {
+		const reminders = ['take out the trash'];
+		render(
+			<Provider store={store}>
+				<ReminderList reminders={reminders} />
+			</Provider>
+		);
+		userEvent.click(screen.getByRole('get-more-options'));
+		expect(screen.getByTitle('reminder-card'));
+	});
 });
