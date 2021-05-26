@@ -3,12 +3,17 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { store } from '../../app/store';
+import { reset, setReminders } from '../../slices/reminders-slice';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import ReminderList from './reminder-list';
 
 describe('Reminder List', () => {
+	afterEach(() => {
+		store.dispatch(reset());
+	});
+
 	test('renders a list', () => {
 		render(
 			<Provider store={store}>
@@ -19,10 +24,9 @@ describe('Reminder List', () => {
 	});
 
 	test('renders no ReminderItem elements if none exist in the reminders list', () => {
-		const reminders = [];
 		render(
 			<Provider store={store}>
-				<ReminderList reminders={reminders} />
+				<ReminderList />
 			</Provider>
 		);
 		expect(screen.queryByTitle('reminder-item')).not.toBeInTheDocument();
@@ -30,9 +34,12 @@ describe('Reminder List', () => {
 
 	test('renders one ReminderItem elements if only one exist in the reminders list', () => {
 		const reminders = ['take out the trash'];
+		reminders.forEach((reminder) => {
+			store.dispatch(setReminders(reminder));
+		});
 		render(
 			<Provider store={store}>
-				<ReminderList reminders={reminders} />
+				<ReminderList />
 			</Provider>
 		);
 		expect(screen.getAllByTitle('reminder-item')).toHaveLength(1);
@@ -40,9 +47,12 @@ describe('Reminder List', () => {
 
 	test('renders one ReminderItem elements for each item in the reminders list', () => {
 		const reminders = ['take out the trash', 'brush your teeth', 'walk the dogs'];
+		reminders.forEach((reminder) => {
+			store.dispatch(setReminders(reminder));
+		});
 		render(
 			<Provider store={store}>
-				<ReminderList reminders={reminders} />
+				<ReminderList />
 			</Provider>
 		);
 		expect(screen.getAllByTitle('reminder-item')).toHaveLength(reminders.length);
@@ -50,12 +60,14 @@ describe('Reminder List', () => {
 
 	test('displays the correct text for each reminder', () => {
 		const reminders = ['take out the trash', 'brush your teeth', 'walk the dogs'];
+
 		render(
 			<Provider store={store}>
-				<ReminderList reminders={reminders} />
+				<ReminderList />
 			</Provider>
 		);
 		reminders.forEach((reminder) => {
+			store.dispatch(setReminders(reminder));
 			expect(screen.getByText(reminder));
 		});
 	});
@@ -187,16 +199,5 @@ describe('Reminder List', () => {
 		userEvent.click(screen.getByRole('button'));
 		userEvent.type(screen.getByRole('textbox'), '{enter}');
 		expect(screen.queryByTitle('reminder-item')).not.toBeInTheDocument();
-	});
-
-	test('clicking the info button on a reminder item renders only 1 card', () => {
-		const reminders = ['take out the trash', 'brush your teeth', 'walk the dogs'];
-		render(
-			<Provider store={store}>
-				<ReminderList reminders={reminders} />
-			</Provider>
-		);
-		userEvent.click(screen.getAllByRole('get-more-options')[0]);
-		expect(screen.getAllByTitle('reminder-card')).toHaveLength(1);
 	});
 });

@@ -1,9 +1,11 @@
 /** @format */
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectReminders, setReminders } from '../../slices/reminders-slice';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
-import Reminder from '../reminder/reminder';
+import ReminderItem from '../reminder-item/reminder-item';
 import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles((theme) => ({
@@ -14,9 +16,10 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const ReminderList = (props) => {
+const ReminderList = () => {
 	const classes = useStyles();
-	const [reminders, setReminders] = useState(props.reminders || []);
+	const dispatch = useDispatch();
+	const reminders = useSelector(selectReminders);
 	const [textField, setTextField] = useState('');
 	const [toggleInput, setToggleInput] = useState(false);
 
@@ -24,7 +27,7 @@ const ReminderList = (props) => {
 		<div title="reminder-list">
 			<List className={classes.root} role="list">
 				{reminders.map((reminder, i) => (
-					<Reminder key={i} index={i} reminderText={reminder} />
+					<ReminderItem key={i} index={i} reminderText={reminder} />
 				))}
 			</List>
 			{toggleInput ? (
@@ -36,7 +39,7 @@ const ReminderList = (props) => {
 					}}
 					onKeyPress={(event) => {
 						if (event.key === 'Enter' && textField.length > 0) {
-							setReminders([...reminders, textField]);
+							dispatch(setReminders(textField));
 							setTextField('');
 							setToggleInput(false);
 						}
