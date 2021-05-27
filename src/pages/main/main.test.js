@@ -6,6 +6,7 @@ import { store } from '../../app/store';
 import { reset, setReminders } from '../../slices/reminders-slice';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { v4 as uuidv4 } from 'uuid';
 import userEvent from '@testing-library/user-event';
 import Main from './main';
 import ReminderItem from '../../components/reminder-item/reminder-item';
@@ -40,7 +41,7 @@ describe('Main', () => {
 	});
 
 	test('clicking the on a reminder item opens a reminder card', () => {
-		const reminder = 'testing testing 123';
+		const reminder = { title: 'take out the trash', id: uuidv4() };
 		store.dispatch(setReminders(reminder));
 		userEvent.click(screen.getByRole('open-reminder-card'));
 		expect(screen.getByTitle('reminder-card'));
@@ -48,12 +49,16 @@ describe('Main', () => {
 
 	test('clicking the on a reminder item opens a reminder card with the correct text', () => {
 		store.dispatch(reset());
-		const reminders = ['take out the trash', 'brush your teeth', 'walk the dogs'];
+		const reminders = [
+			{ title: 'take out the trash', id: uuidv4() },
+			{ title: 'brush your teeth', id: uuidv4() },
+			{ title: 'walk the dogs', id: uuidv4() },
+		];
 		reminders.forEach((reminder) => {
 			store.dispatch(setReminders(reminder));
 		});
 		userEvent.click(screen.getAllByRole('open-reminder-card')[1]);
-		expect(screen.getByTitle('reminder-card')).toHaveTextContent(reminders[1]);
+		expect(screen.getByTitle('reminder-card')).toHaveTextContent(reminders[1].title);
 	});
 
 	test('when reminder card is open, clicking DONE will close reminder and open reminders again', () => {
@@ -63,7 +68,11 @@ describe('Main', () => {
 
 	test('when the reminder card is open and the text field is changed, clicking DONE will update the redux store reminders', () => {
 		store.dispatch(reset());
-		const reminders = ['take out the trash', 'brush your teeth', 'walk the dogs'];
+		const reminders = [
+			{ title: 'take out the trash', id: uuidv4() },
+			{ title: 'brush your teeth', id: uuidv4() },
+			{ title: 'walk the dogs', id: uuidv4() },
+		];
 		reminders.forEach((reminder) => {
 			store.dispatch(setReminders(reminder));
 		});
@@ -72,6 +81,6 @@ describe('Main', () => {
 		userEvent.type(screen.getByRole('textbox'), '{selectall}{del}Hello everyone!{enter}');
 		userEvent.click(screen.getByRole('done'));
 		const updatedReminders = store.getState().reminders.reminders;
-		expect(updatedReminders.includes('Hello everyone!')).toBeTruthy();
+		expect(updatedReminders.find((reminder) => reminder.title === 'Hello everyone!')).toBeTruthy();
 	});
 });

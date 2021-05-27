@@ -2,12 +2,11 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectReminders, setReminders } from '../../slices/reminders-slice';
+import { v4 as uuidv4 } from 'uuid';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import Checkbox from '@material-ui/core/Checkbox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ReminderItem from '../reminder-item/reminder-item';
 import TextField from '@material-ui/core/TextField';
 
@@ -21,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
 const ReminderList = () => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
-	const [isChecked, setIsChecked] = useState(false);
 	const reminders = useSelector(selectReminders);
 	const [textField, setTextField] = useState('');
 	const [toggleInput, setToggleInput] = useState(false);
@@ -29,8 +27,8 @@ const ReminderList = () => {
 	return (
 		<div title="reminder-list">
 			<List className={classes.list} role="list">
-				{reminders.map((reminder, i) => (
-					<ReminderItem key={i} index={i} reminderText={reminder} />
+				{reminders.map((reminder) => (
+					<ReminderItem key={uuidv4()} id={reminder.id} title={reminder.title} />
 				))}
 			</List>
 
@@ -47,7 +45,7 @@ const ReminderList = () => {
 							}}
 							onKeyPress={(event) => {
 								if (event.key === 'Enter' && textField.length > 0) {
-									dispatch(setReminders(textField));
+									dispatch(setReminders({ title: textField, id: uuidv4() }));
 									setTextField('');
 									setToggleInput(false);
 								}

@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { store } from '../../app/store';
 import { reset, setReminders } from '../../slices/reminders-slice';
 import { render, screen } from '@testing-library/react';
+import { v4 as uuidv4 } from 'uuid';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import ReminderList from './reminder-list';
@@ -30,7 +31,7 @@ describe('Reminder List', () => {
 	});
 
 	test('renders one ReminderItem elements if only one exist in the reminders list', () => {
-		const reminders = ['take out the trash'];
+		const reminders = [{ title: 'take out the trash', id: uuidv4() }];
 		reminders.forEach((reminder) => {
 			store.dispatch(setReminders(reminder));
 		});
@@ -39,7 +40,11 @@ describe('Reminder List', () => {
 	});
 
 	test('renders one ReminderItem elements for each item in the reminders list', () => {
-		const reminders = ['take out the trash', 'brush your teeth', 'walk the dogs'];
+		const reminders = [
+			{ title: 'take out the trash', id: uuidv4() },
+			{ title: 'brush your teeth', id: uuidv4() },
+			{ title: 'walk the dogs', id: uuidv4() },
+		];
 		reminders.forEach((reminder) => {
 			store.dispatch(setReminders(reminder));
 		});
@@ -48,11 +53,15 @@ describe('Reminder List', () => {
 	});
 
 	test('displays the correct text for each reminder', () => {
-		const reminders = ['take out the trash', 'brush your teeth', 'walk the dogs'];
+		const reminders = [
+			{ title: 'take out the trash', id: uuidv4() },
+			{ title: 'brush your teeth', id: uuidv4() },
+			{ title: 'walk the dogs', id: uuidv4() },
+		];
 
 		reminders.forEach((reminder) => {
 			store.dispatch(setReminders(reminder));
-			expect(screen.getByText(reminder));
+			expect(screen.getByText(reminder.title));
 		});
 	});
 

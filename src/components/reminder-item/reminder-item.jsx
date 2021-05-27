@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setToggleMoreOptions } from '../../slices/reminders-slice';
+import { setReminder, setToggleMoreOptions } from '../../slices/reminders-slice';
 import Checkbox from '@material-ui/core/Checkbox';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -16,12 +16,13 @@ const ReminderItem = (props) => {
 		<div title="reminder-item">
 			<ListItem
 				onClick={() => {
-					dispatch(setToggleMoreOptions(props.index));
+					dispatch(setReminder(props));
+					dispatch(setToggleMoreOptions());
 				}}
 				role="open-reminder-card"
 				button
 			>
-				<ListItemText primary={props.reminderText} role="item-text" />
+				<ListItemText primary={props.title} role="item-text" />
 				<ListItemSecondaryAction role="secondary-action">
 					<Checkbox
 						checked={isChecked}

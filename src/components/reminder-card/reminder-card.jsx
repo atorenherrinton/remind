@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 const ReminderCard = (props) => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
-	const [reminderText, setReminderText] = useState(props.reminderText || '');
+	const [title, setTitle] = useState(props.title);
 	const [toggleInput, setToggleInput] = useState(false);
 	return (
 		<div className={classes.root} title="reminder-card">
@@ -39,25 +39,25 @@ const ReminderCard = (props) => {
 							{toggleInput ? (
 								<TextField
 									onChange={(event) => {
-										setReminderText(event.target.value);
+										setTitle(event.target.value);
 									}}
 									onKeyPress={(event) => {
 										if (event.key === 'Enter') {
-											if (reminderText.length < 1) {
+											if (title.length < 1) {
 											} else {
 												setToggleInput(false);
 											}
 										}
 									}}
 									role="text-field"
-									value={reminderText}
+									value={title}
 								/>
 							) : (
 								<ListItemText
 									onClick={() => {
 										setToggleInput(true);
 									}}
-									primary={reminderText}
+									primary={title}
 									role="item-text"
 								/>
 							)}
@@ -65,12 +65,9 @@ const ReminderCard = (props) => {
 								<Button
 									onClick={() => {
 										dispatch(
-											changeReminder({
-												reminderText: reminderText,
-												reminderIndex: props.reminderIndex,
-											})
+											changeReminder(title)
 										);
-										dispatch(setToggleMoreOptions(-1));
+										dispatch(setToggleMoreOptions());
 									}}
 									role="done"
 									size="small"

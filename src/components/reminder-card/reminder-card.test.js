@@ -6,15 +6,16 @@ import { store } from '../../app/store';
 import { render, screen } from '@testing-library/react';
 import { selectReminders } from '../../slices/reminders-slice';
 import '@testing-library/jest-dom';
+import { v4 as uuidv4 } from 'uuid';
 import userEvent from '@testing-library/user-event';
 import ReminderCard from './reminder-card';
 
 describe('Reminder Card', () => {
-	const text = 'testing testing 123';
+	const reminder = { title: 'take out the trash', id: uuidv4() };
 	beforeEach(() => {
 		render(
 			<Provider store={store}>
-				<ReminderCard reminderText={text} />
+				<ReminderCard title={reminder.title} id={reminder.id} />
 			</Provider>
 		);
 	});
@@ -61,12 +62,12 @@ describe('Reminder Card', () => {
 
 	test('the textField matches the item text', () => {
 		userEvent.click(screen.getByRole('item-text'));
-		expect(screen.getByDisplayValue(text));
+		expect(screen.getByDisplayValue(reminder.title));
 	});
 
 	test('the listItemText can be updated from the textField', () => {
 		userEvent.click(screen.getByRole('item-text'));
-		userEvent.type(screen.getByDisplayValue(text), '{selectall}{del}Hello everyone!{enter}');
+		userEvent.type(screen.getByDisplayValue(reminder.title), '{selectall}{del}Hello everyone!{enter}');
 		expect(screen.getByRole('item-text')).toHaveTextContent('Hello everyone!');
 	});
 

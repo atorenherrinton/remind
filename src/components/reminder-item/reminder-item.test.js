@@ -5,15 +5,16 @@ import { Provider } from 'react-redux';
 import { store } from '../../app/store';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { v4 as uuidv4 } from 'uuid';
 import userEvent from '@testing-library/user-event';
 import ReminderItem from '../reminder-item/reminder-item';
 
 describe('Reminder', () => {
-	const text = 'testing testing 123';
+	const reminder = { title: 'take out the trash', id: uuidv4() };
 	beforeEach(() => {
 		render(
 			<Provider store={store}>
-				<ReminderItem reminderText={text} />
+				<ReminderItem title={reminder.title} />
 			</Provider>
 		);
 	});
@@ -27,7 +28,7 @@ describe('Reminder', () => {
 	});
 
 	test('listItemText contains correct text', () => {
-		expect(screen.getAllByText(text)).toHaveLength(1);
+		expect(screen.getAllByText(reminder.title)).toHaveLength(1);
 	});
 
 	test('renders a ListItemSecondaryAction', () => {
