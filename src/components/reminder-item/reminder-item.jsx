@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setToggleMoreOptions } from '../../slices/reminders-slice';
-import { makeStyles } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';

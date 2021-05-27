@@ -4,11 +4,12 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { store } from '../../app/store';
 import { render, screen } from '@testing-library/react';
+import { selectReminders } from '../../slices/reminders-slice';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import ReminderCard from './reminder-card';
 
-describe('Reminder List', () => {
+describe('Reminder Card', () => {
 	const text = 'testing testing 123';
 	beforeEach(() => {
 		render(
@@ -35,12 +36,17 @@ describe('Reminder List', () => {
 	});
 
 	test('renders a secondary action container', () => {
-		expect(screen.getAllByRole('secondary-action')).toHaveLength(2);
+		expect(screen.getAllByRole('close-reminder'));
 	});
 
-	test('renders a checkbox', () => {
-		expect(screen.getByTestId('checkbox'));
+	test('renders a button', () => {
+		expect(screen.getByRole('done'));
 	});
+
+	test('button displays text Done', () => {
+		expect(screen.getByRole('done')).toHaveTextContent('Done');
+	});
+
 	// the list item text is converted into an input when clicked
 
 	test('the listItemText disappears', () => {
@@ -58,12 +64,6 @@ describe('Reminder List', () => {
 		expect(screen.getByDisplayValue(text));
 	});
 
-	test('the reminder is deleted/hidden if the return key is pressed and the textField is empty', () => {
-		userEvent.click(screen.getByRole('item-text'));
-		userEvent.type(screen.getByDisplayValue(text), '{selectall}{del}{enter}');
-		expect(screen.queryByRole('list-item')).not.toBeInTheDocument();
-	});
-
 	test('the listItemText can be updated from the textField', () => {
 		userEvent.click(screen.getByRole('item-text'));
 		userEvent.type(screen.getByDisplayValue(text), '{selectall}{del}Hello everyone!{enter}');
@@ -75,18 +75,54 @@ describe('Reminder List', () => {
 	});
 
 	test('renders an icon container', () => {
-		expect(screen.getByRole('icon-container'));
+		expect(screen.getByRole('date-icon-container'));
 	});
 
 	test('renders a date range icon', () => {
-		expect(screen.getByTitle('date-range-icon'));
+		expect(screen.getByTitle('date-icon'));
 	});
 
-	test('renders a toggle label', () => {
-		expect(screen.getByRole('toggle-label'));
+	test('renders a date selector label', () => {
+		expect(screen.getByRole('date')).toHaveTextContent('Date');
+	});
+
+	test('renders a secondary action container', () => {
+		expect(screen.getAllByRole('select-date'));
 	});
 
 	test('renders a toggle-switch', () => {
-		expect(screen.getByRole('toggle-switch'));
+		expect(screen.getByRole('toggle-date-switch'));
+	});
+
+	test('renders an actions container', () => {
+		expect(screen.getByRole('actions'));
+	});
+
+	test('renders a list item as a date selector', () => {
+		expect(screen.getByRole('time-selector'));
+	});
+
+	test('renders an icon container', () => {
+		expect(screen.getByRole('time-icon-container'));
+	});
+
+	test('renders a date range icon', () => {
+		expect(screen.getByTitle('date-icon'));
+	});
+
+	test('renders a toggle label', () => {
+		expect(screen.getByRole('time')).toHaveTextContent('Time');
+	});
+
+	test('renders a secondary action container', () => {
+		expect(screen.getAllByRole('select-time'));
+	});
+
+	test('renders a toggle-switch', () => {
+		expect(screen.getByRole('toggle-time-switch'));
+	});
+
+	test('renders an actions container', () => {
+		expect(screen.getByRole('actions'));
 	});
 });

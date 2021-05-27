@@ -55,4 +55,23 @@ describe('Main', () => {
 		userEvent.click(screen.getAllByRole('open-reminder-card')[1]);
 		expect(screen.getByTitle('reminder-card')).toHaveTextContent(reminders[1]);
 	});
+
+	test('when reminder card is open, clicking DONE will close reminder and open reminders again', () => {
+		userEvent.click(screen.getByRole('done'));
+		expect(screen.getByTitle('reminder-list'));
+	});
+
+	test('when the reminder card is open and the text field is changed, clicking DONE will update the redux store reminders', () => {
+		store.dispatch(reset());
+		const reminders = ['take out the trash', 'brush your teeth', 'walk the dogs'];
+		reminders.forEach((reminder) => {
+			store.dispatch(setReminders(reminder));
+		});
+		userEvent.click(screen.getAllByRole('open-reminder-card')[1]);
+		userEvent.click(screen.getByRole('item-text'));
+		userEvent.type(screen.getByRole('textbox'), '{selectall}{del}Hello everyone!{enter}');
+		userEvent.click(screen.getByRole('done'));
+		const updatedReminders = store.getState().reminders.reminders;
+		expect(updatedReminders.includes('Hello everyone!')).toBeTruthy();
+	});
 });

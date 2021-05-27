@@ -10,25 +10,22 @@ import userEvent from '@testing-library/user-event';
 import ReminderList from './reminder-list';
 
 describe('Reminder List', () => {
+	beforeEach(() => {
+		render(
+			<Provider store={store}>
+				<ReminderList />
+			</Provider>
+		);
+	});
 	afterEach(() => {
 		store.dispatch(reset());
 	});
 
 	test('renders a list', () => {
-		render(
-			<Provider store={store}>
-				<ReminderList />
-			</Provider>
-		);
 		expect(screen.getByRole('list'));
 	});
 
 	test('renders no ReminderItem elements if none exist in the reminders list', () => {
-		render(
-			<Provider store={store}>
-				<ReminderList />
-			</Provider>
-		);
 		expect(screen.queryByTitle('reminder-item')).not.toBeInTheDocument();
 	});
 
@@ -37,11 +34,7 @@ describe('Reminder List', () => {
 		reminders.forEach((reminder) => {
 			store.dispatch(setReminders(reminder));
 		});
-		render(
-			<Provider store={store}>
-				<ReminderList />
-			</Provider>
-		);
+
 		expect(screen.getAllByTitle('reminder-item')).toHaveLength(1);
 	});
 
@@ -50,22 +43,13 @@ describe('Reminder List', () => {
 		reminders.forEach((reminder) => {
 			store.dispatch(setReminders(reminder));
 		});
-		render(
-			<Provider store={store}>
-				<ReminderList />
-			</Provider>
-		);
+
 		expect(screen.getAllByTitle('reminder-item')).toHaveLength(reminders.length);
 	});
 
 	test('displays the correct text for each reminder', () => {
 		const reminders = ['take out the trash', 'brush your teeth', 'walk the dogs'];
 
-		render(
-			<Provider store={store}>
-				<ReminderList />
-			</Provider>
-		);
 		reminders.forEach((reminder) => {
 			store.dispatch(setReminders(reminder));
 			expect(screen.getByText(reminder));
@@ -73,68 +57,38 @@ describe('Reminder List', () => {
 	});
 
 	test('renders a button', () => {
-		render(
-			<Provider store={store}>
-				<ReminderList />
-			</Provider>
-		);
 		expect(screen.getByRole('button'));
 	});
 
 	test('the button text displays Add Reminder', () => {
-		render(
-			<Provider store={store}>
-				<ReminderList />
-			</Provider>
-		);
 		expect(screen.getByRole('button')).toHaveTextContent('Add Reminder');
 	});
 
-	test('renders no text field when component first renders', () => {
-		render(
-			<Provider store={store}>
-				<ReminderList />
-			</Provider>
-		);
-		expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+	test('renders a list when button is clicked', () => {
+		userEvent.click(screen.getByRole('button'));
+		expect(screen.getByTitle('add-new-reminder'));
+	});
+
+	test('renders no listItem when component first renders', () => {
+		expect(screen.queryByRole('reminder-item')).not.toBeInTheDocument();
+	});
+
+	test('renders a listItem when button is clicked', () => {
+		userEvent.click(screen.getByRole('button'));
+		expect(screen.queryByRole('reminder-item'));
 	});
 
 	test('renders a text field when button is clicked', () => {
-		render(
-			<Provider store={store}>
-				<ReminderList />
-			</Provider>
-		);
 		userEvent.click(screen.getByRole('button'));
-		expect(screen.queryByRole('textbox')).toBeInTheDocument();
+		expect(screen.getByRole('textbox'));
 	});
 
 	test('the textfield has autocomplete turned off', () => {
-		render(
-			<Provider store={store}>
-				<ReminderList />
-			</Provider>
-		);
 		userEvent.click(screen.getByRole('button'));
 		expect(screen.getByRole('textbox').autocomplete).toEqual('off');
 	});
 
-	test('the button disappears when clicked', () => {
-		render(
-			<Provider store={store}>
-				<ReminderList />
-			</Provider>
-		);
-		userEvent.click(screen.getByRole('button'));
-		expect(screen.queryByRole('button')).not.toBeInTheDocument();
-	});
-
 	test('the text field value matches what has been typed', () => {
-		render(
-			<Provider store={store}>
-				<ReminderList />
-			</Provider>
-		);
 		userEvent.click(screen.getByRole('button'));
 		const test = 'testing123';
 		userEvent.type(screen.getByRole('textbox'), test);
@@ -142,11 +96,6 @@ describe('Reminder List', () => {
 	});
 
 	test('a new reminder is created when the return key is pressed', () => {
-		render(
-			<Provider store={store}>
-				<ReminderList />
-			</Provider>
-		);
 		userEvent.click(screen.getByRole('button'));
 		const test = 'testing123';
 		userEvent.type(screen.getByRole('textbox'), test + '{enter}');
@@ -154,11 +103,6 @@ describe('Reminder List', () => {
 	});
 
 	test('the value of the text field resets when the return key is pressed', () => {
-		render(
-			<Provider store={store}>
-				<ReminderList />
-			</Provider>
-		);
 		userEvent.click(screen.getByRole('button'));
 		const test = 'testing123';
 		userEvent.type(screen.getByRole('textbox'), test + '{enter}');
@@ -167,11 +111,6 @@ describe('Reminder List', () => {
 	});
 
 	test('the button becomes visible when the return key is pressed', () => {
-		render(
-			<Provider store={store}>
-				<ReminderList />
-			</Provider>
-		);
 		userEvent.click(screen.getByRole('button'));
 		const test = 'testing123';
 		userEvent.type(screen.getByRole('textbox'), test + '{enter}');
@@ -179,11 +118,6 @@ describe('Reminder List', () => {
 	});
 
 	test('the text field disappears when the return key is pressed', () => {
-		render(
-			<Provider store={store}>
-				<ReminderList />
-			</Provider>
-		);
 		userEvent.click(screen.getByRole('button'));
 		const test = 'testing123';
 		userEvent.type(screen.getByRole('textbox'), test + '{enter}');
@@ -191,11 +125,6 @@ describe('Reminder List', () => {
 	});
 
 	test('a new reminder cannot be created when the text field is empty', () => {
-		render(
-			<Provider store={store}>
-				<ReminderList />
-			</Provider>
-		);
 		userEvent.click(screen.getByRole('button'));
 		userEvent.type(screen.getByRole('textbox'), '{enter}');
 		expect(screen.queryByTitle('reminder-item')).not.toBeInTheDocument();

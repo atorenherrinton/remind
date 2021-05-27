@@ -15,12 +15,16 @@ const Main = () => {
 	return (
 		<div role="main">
 			<Header />
-			<Grid alignItems="flex-start" container direction="row" justify="flex-start" role="container" >
+			<Grid alignItems="flex-start" container direction="row" justify="flex-start" role="container">
 				<Grid item role="item" xs={3}>
 					<NavDrawer title="navigation-drawer" />
 				</Grid>
 				<Grid item role="item" xs={3}>
-					{toggleMoreOptions ? <ReminderCard reminderText={reminders[reminderIndex]} /> : <ReminderList />}
+					{toggleMoreOptions ? (
+						<ReminderCard reminderText={reminders[reminderIndex]} reminderIndex={reminderIndex} />
+					) : (
+						<ReminderList />
+					)}
 				</Grid>
 			</Grid>
 		</div>
