@@ -91,24 +91,37 @@ describe('Reminder Card', () => {
 		expect(screen.getAllByRole('select-date'));
 	});
 
-	test('renders a toggle-switch', () => {
+	test('renders a toggle-date-switch', () => {
 		expect(screen.getByRole('toggle-date-switch'));
 	});
 
-	test('renders an actions container', () => {
-		expect(screen.getByRole('actions'));
+	test('turning the date switch on opens a date picker container', () => {
+		userEvent.click(screen.getByRole('toggle-date-switch'));
+		expect(screen.getByRole('date-picker-container'));
 	});
 
-	test('renders a list item as a date selector', () => {
+	test('turning the date switch on opens a date picker', () => {
+		userEvent.click(screen.getByRole('toggle-date-switch'));
+		expect(screen.getByRole('date-picker'));
+	});
+
+	test('turning the date switch off toggles turns the time switch off', () => {
+		userEvent.click(screen.getByRole('toggle-date-switch'));
+		userEvent.click(screen.getByRole('toggle-time-switch'));
+		userEvent.click(screen.getByRole('toggle-date-switch'));
+		expect(screen.getByRole('toggle-time-switch')).not.toHaveClass('Mui-checked');
+	});
+
+	test('renders a list item as a time selector', () => {
 		expect(screen.getByRole('time-selector'));
 	});
 
-	test('renders an icon container', () => {
+	test('renders an time icon container', () => {
 		expect(screen.getByRole('time-icon-container'));
 	});
 
-	test('renders a date range icon', () => {
-		expect(screen.getByTitle('date-icon'));
+	test('renders a time range icon', () => {
+		expect(screen.getByTitle('time-icon'));
 	});
 
 	test('renders a toggle label', () => {
@@ -119,8 +132,38 @@ describe('Reminder Card', () => {
 		expect(screen.getAllByRole('select-time'));
 	});
 
-	test('renders a toggle-switch', () => {
+	test('renders a toggle-time-switch', () => {
 		expect(screen.getByRole('toggle-time-switch'));
+	});
+
+	test('turning the time switch on toggles the date picker switch on', () => {
+		userEvent.click(screen.getByRole('toggle-time-switch'));
+		expect(screen.getByRole('toggle-date-switch')).toHaveClass('Mui-checked');
+	});
+
+	test('turning the time switch on opens a date picker container', () => {
+		userEvent.click(screen.getByRole('toggle-time-switch'));
+		expect(screen.getByRole('date-picker-container'));
+	});
+
+	test('turning the time switch on opens a time picker container', () => {
+		userEvent.click(screen.getByRole('toggle-time-switch'));
+		expect(screen.getByRole('time-picker-container'));
+	});
+
+	test('turning the time switch on opens a time picker', () => {
+		userEvent.click(screen.getByRole('toggle-time-switch'));
+		expect(screen.getByRole('time-picker'));
+	});
+
+	test('turning the time switch on toggles the time picker switch on', () => {
+		userEvent.click(screen.getByRole('toggle-time-switch'));
+		expect(screen.getByRole('toggle-time-switch')).toHaveClass('Mui-checked');
+	});
+
+	test('turning the time switch off does not turn the date off', () => {
+		userEvent.dblClick(screen.getByRole('toggle-time-switch'));
+		expect(screen.getByRole('toggle-date-switch')).toHaveClass('Mui-checked');
 	});
 
 	test('renders an actions container', () => {

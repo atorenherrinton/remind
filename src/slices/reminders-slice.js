@@ -12,12 +12,11 @@ export const remindersSlice = createSlice({
 	},
 	// The `reducers` field lets us define reducers and generate associated actions
 	reducers: {
-		changeReminder: (state, action) => {
+		changeTitle: (state, action) => {
 			const newReminders = state.reminders.slice();
 			var index = newReminders.findIndex((reminder) => reminder.id === state.reminder.id);
 			newReminders[index].title = action.payload;
 			state.reminders = newReminders;
-			state.reminder = {};
 		},
 		reset: (state) => {
 			state.reminders = [];
@@ -36,7 +35,7 @@ export const remindersSlice = createSlice({
 	},
 });
 
-export const { changeReminder, reset, setReminder, setReminders, setToggleMoreOptions } = remindersSlice.actions;
+export const { changeTitle, reset, setReminder, setReminders, setToggleMoreOptions } = remindersSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of

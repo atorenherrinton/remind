@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -32,13 +32,12 @@ const useStyles = makeStyles((theme) => ({
 
 const NavDrawer = (props) => {
 	const classes = useStyles();
-	const [listItems, setListItems] = useState(
-		props.listItems || [
-			{ itemText: 'Important', icon: 'Today' },
-			{ itemText: 'Scheduled', icon: 'Schedule' },
-			{ itemText: 'Completed', icon: 'CheckCircle' },
-		]
-	);
+	const listItems = props.listItems || [
+		{ itemText: 'Important', icon: 'Today' },
+		{ itemText: 'Scheduled', icon: 'Schedule' },
+		{ itemText: 'Completed', icon: 'CheckCircle' },
+	];
+
 	return (
 		<div className={classes.root} title="navigation-drawer">
 			<Drawer
