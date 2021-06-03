@@ -27,8 +27,8 @@ const ReminderList = () => {
 	return (
 		<div title="reminder-list">
 			<List className={classes.list} role="list">
-				{reminders.map((reminder) => (
-					<ReminderItem key={uuidv4()} id={reminder.id} title={reminder.title} />
+				{reminders.map((reminder, i) => (
+					<ReminderItem key={i} id={reminder.id} date={reminder.date} title={reminder.title} />
 				))}
 			</List>
 
@@ -45,7 +45,7 @@ const ReminderList = () => {
 							}}
 							onKeyPress={(event) => {
 								if (event.key === 'Enter' && textField.length > 0) {
-									dispatch(setReminders({ title: textField, id: uuidv4() }));
+									dispatch(setReminders({ id: uuidv4(), title: textField }));
 									setTextField('');
 									setToggleInput(false);
 								}

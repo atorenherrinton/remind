@@ -9,7 +9,6 @@ import ReminderCard from '../../components/reminder-card/reminder-card';
 import ReminderList from '../../components/reminder-list/reminder-list';
 
 const Main = () => {
-	const reminder = useSelector(selectReminder);
 	const toggleMoreOptions = useSelector(selectToggleMoreOptions);
 
 	return (
@@ -20,7 +19,7 @@ const Main = () => {
 					<NavDrawer title="navigation-drawer" />
 				</Grid>
 				<Grid item role="item" xs={3}>
-					{toggleMoreOptions ? <ReminderCard title={reminder.title} id={reminder.id} /> : <ReminderList />}
+					{toggleMoreOptions ? <ReminderCard /> : <ReminderList />}
 				</Grid>
 			</Grid>
 		</div>

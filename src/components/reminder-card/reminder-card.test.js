@@ -4,7 +4,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { store } from '../../app/store';
 import { render, screen } from '@testing-library/react';
-import { selectReminders } from '../../slices/reminders-slice';
+import { reset, setReminders } from '../../slices/reminders-slice';
 import '@testing-library/jest-dom';
 import { v4 as uuidv4 } from 'uuid';
 import userEvent from '@testing-library/user-event';
@@ -100,11 +100,6 @@ describe('Reminder Card', () => {
 		expect(screen.getByRole('date-picker-container'));
 	});
 
-	test('turning the date switch on opens a date picker', () => {
-		userEvent.click(screen.getByRole('toggle-date-switch'));
-		expect(screen.getByRole('date-picker'));
-	});
-
 	test('turning the date switch off toggles turns the time switch off', () => {
 		userEvent.click(screen.getByRole('toggle-date-switch'));
 		userEvent.click(screen.getByRole('toggle-time-switch'));
@@ -168,5 +163,14 @@ describe('Reminder Card', () => {
 
 	test('renders an actions container', () => {
 		expect(screen.getByRole('actions'));
+	});
+
+	test('if there is already a date, the toggle is open by default', () => {
+		expect(screen.getByRole('toggle-date-switch')).toHaveClass('Mui-checked');
+	});
+
+	test('if there is already a date, clicking the switch should turn it off', () => {
+		userEvent.click(screen.getByRole('toggle-date-switch'));
+		expect(screen.getByRole('toggle-date-switch')).not.toHaveClass('Mui-checked');
 	});
 });

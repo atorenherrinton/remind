@@ -3,6 +3,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { store } from '../../app/store';
+import { reset } from '../../slices/reminders-slice';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
@@ -30,6 +31,4 @@ describe('Date Picker', () => {
 		userEvent.type(screen.getByRole('textbox'), '{selectall}{del}' + date + '{enter}');
 		expect(screen.getByRole('textbox')).toHaveValue(date);
 	});
-
-
 });

@@ -83,4 +83,16 @@ describe('Main', () => {
 		const updatedReminders = store.getState().reminders.reminders;
 		expect(updatedReminders.find((reminder) => reminder.title === 'Hello everyone!')).toBeTruthy();
 	});
+
+	test('when the reminder card is open and the text field is changed, clicking DONE will update the redux store reminders', () => {
+		store.dispatch(reset());
+		const reminder = { title: 'take out the trash', id: uuidv4() };
+		store.dispatch(setReminders(reminder));
+		userEvent.click(screen.getAllByRole('open-reminder-card')[0]);
+		userEvent.click(screen.getByRole('toggle-date-switch'));
+		userEvent.type(screen.getByRole('textbox'), '{selectall}{del}12/12/2012{enter}');
+		userEvent.click(screen.getByRole('done'));
+		const updatedReminders = store.getState().reminders.reminders;
+		expect(updatedReminders.find((reminder) => reminder.date === '12/12/2012')).toBeTruthy();
+	});
 });

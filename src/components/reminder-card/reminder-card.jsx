@@ -1,8 +1,15 @@
 /** @format */
 
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { changeTitle, setToggleMoreOptions } from '../../slices/reminders-slice';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+	addDate,
+	changeTitle,
+	saveChanges,
+	selectDate,
+	selectReminder,
+	setToggleMoreOptions,
+} from '../../slices/reminders-slice';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -30,10 +37,20 @@ const useStyles = makeStyles((theme) => ({
 const ReminderCard = (props) => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
-	const [title, setTitle] = useState(props.title);
+	const date = useSelector(selectDate);
+	const [isLoaded, setIsLoaded] = useState(false);
+	const reminder = useSelector(selectReminder);
+	const [title, setTitle] = useState(reminder.title || props.title);
 	const [toggleInput, setToggleInput] = useState(false);
 	const [toggleDatePicker, setToggleDatePicker] = useState(false);
 	const [toggleTimePicker, setToggleTimePicker] = useState(false);
+
+	useEffect(() => {
+		if (date && !isLoaded) {
+			setToggleDatePicker(true);
+			setIsLoaded(true);
+		}
+	}, [date, isLoaded]);
 
 	return (
 		<div className={classes.root} title="reminder-card">
@@ -71,6 +88,7 @@ const ReminderCard = (props) => {
 									color="primary"
 									onClick={() => {
 										dispatch(changeTitle(title));
+										dispatch(saveChanges());
 										dispatch(setToggleMoreOptions());
 									}}
 									role="done"
@@ -89,8 +107,10 @@ const ReminderCard = (props) => {
 								<Switch
 									checked={toggleDatePicker}
 									edge="end"
-									// onChange={handleToggle('wifi')}
 									onClick={() => {
+										if (!date) {
+											dispatch(addDate(new Date().toLocaleDateString()));
+										}
 										setToggleDatePicker(!toggleDatePicker);
 										if (toggleTimePicker && toggleDatePicker) {
 											setToggleTimePicker(false);
@@ -102,7 +122,7 @@ const ReminderCard = (props) => {
 						</ListItem>
 						{toggleDatePicker ? (
 							<ListItem role="date-picker-container">
-								<DatePicker id={props.id} />
+								<DatePicker id={reminder.id} />
 							</ListItem>
 						) : null}
 						<ListItem role="time-selector">
@@ -126,7 +146,7 @@ const ReminderCard = (props) => {
 						</ListItem>
 						{toggleTimePicker ? (
 							<ListItem role="time-picker-container">
-								<TimePicker id={props.id} />
+								<TimePicker id={reminder.id} />
 							</ListItem>
 						) : null}
 					</List>
