@@ -12,7 +12,7 @@ const DatePicker = () => {
 
 	const handleChange = (date) => {
 		if (date) {
-			dispatch(addDate(date.toLocaleDateString()));
+			dispatch(addDate(date.toString()));
 		}
 	};
 

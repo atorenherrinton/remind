@@ -4,10 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
 	addDate,
+	addTime,
 	changeTitle,
+	removeDate,
+	removeTime,
 	saveChanges,
 	selectDate,
 	selectReminder,
+	selectTime,
 	setToggleMoreOptions,
 } from '../../slices/reminders-slice';
 import Button from '@material-ui/core/Button';
@@ -37,7 +41,8 @@ const useStyles = makeStyles((theme) => ({
 const ReminderCard = (props) => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
-	const date = useSelector(selectDate);
+	const date = useSelector(selectDate) || props.date;
+	const time = useSelector(selectTime) || props.time;
 	const [isLoaded, setIsLoaded] = useState(false);
 	const reminder = useSelector(selectReminder);
 	const [title, setTitle] = useState(reminder.title || props.title);
@@ -46,11 +51,16 @@ const ReminderCard = (props) => {
 	const [toggleTimePicker, setToggleTimePicker] = useState(false);
 
 	useEffect(() => {
-		if (date && !isLoaded) {
-			setToggleDatePicker(true);
+		if (!isLoaded) {
+			if (date) {
+				setToggleDatePicker(true);
+			}
+			if (time) {
+				setToggleTimePicker(true);
+			}
 			setIsLoaded(true);
 		}
-	}, [date, isLoaded]);
+	}, [date, time, isLoaded]);
 
 	return (
 		<div className={classes.root} title="reminder-card">
@@ -109,9 +119,13 @@ const ReminderCard = (props) => {
 									edge="end"
 									onClick={() => {
 										if (!date) {
-											dispatch(addDate(new Date().toLocaleDateString()));
+											dispatch(addDate(new Date().toString()));
+										} else {
+											dispatch(removeDate());
 										}
+
 										setToggleDatePicker(!toggleDatePicker);
+
 										if (toggleTimePicker && toggleDatePicker) {
 											setToggleTimePicker(false);
 										}
@@ -135,10 +149,21 @@ const ReminderCard = (props) => {
 									checked={toggleTimePicker}
 									edge="end"
 									onClick={() => {
+										if (!date) {
+											dispatch(addDate(new Date().toString()));
+										}
+
+										if (!time) {
+											dispatch(addTime());
+										} else {
+											dispatch(removeTime());
+										}
+
+										setToggleTimePicker(!toggleTimePicker);
+
 										if (!toggleDatePicker) {
 											setToggleDatePicker(true);
 										}
-										setToggleTimePicker(!toggleTimePicker);
 									}}
 									role="toggle-time-switch"
 								/>

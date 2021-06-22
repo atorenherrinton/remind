@@ -8,7 +8,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 
-const ReminderItem = ({ id, date, title }) => {
+const ReminderItem = ({ id, date, time, title }) => {
 	const dispatch = useDispatch();
 	const [isChecked, setIsChecked] = useState(false);
 
@@ -16,7 +16,7 @@ const ReminderItem = ({ id, date, title }) => {
 		<div title="reminder-item">
 			<ListItem
 				onClick={() => {
-					dispatch(setReminder({ id, date, title }));
+					dispatch(setReminder({ id, date, time, title }));
 					dispatch(setToggleMoreOptions());
 				}}
 				role="open-reminder-card"

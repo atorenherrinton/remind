@@ -14,8 +14,17 @@ export const remindersSlice = createSlice({
 		addDate: (state, action) => {
 			state.reminder.date = action.payload;
 		},
+		addTime: (state) => {
+			state.reminder.time = true;
+		},
 		changeTitle: (state, action) => {
 			state.reminder.title = action.payload;
+		},
+		removeDate: (state) => {
+			state.reminder.date = null;
+		},
+		removeTime: (state) => {
+			state.reminder.time = false;
 		},
 		reset: (state) => {
 			state.reminder = {};
@@ -40,13 +49,25 @@ export const remindersSlice = createSlice({
 	},
 });
 
-export const { addDate, changeTitle, reset, saveChanges, setDate, setReminder, setReminders, setToggleMoreOptions } =
-	remindersSlice.actions;
+export const {
+	addDate,
+	addTime,
+	changeTitle,
+	removeDate,
+	removeTime,
+	reset,
+	saveChanges,
+	setDate,
+	setReminder,
+	setReminders,
+	setToggleMoreOptions,
+} = remindersSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 export const selectDate = (state) => state.reminders.reminder.date;
+export const selectTime = (state) => state.reminders.reminder.time;
 export const selectReminder = (state) => state.reminders.reminder;
 export const selectReminders = (state) => state.reminders.reminders;
 export const selectReminderId = (state) => state.reminders.reminderId;

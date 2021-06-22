@@ -1,15 +1,20 @@
 /** @format */
 
 import 'date-fns';
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addDate, selectDate } from '../../slices/reminders-slice';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
 
 const TimePicker = () => {
-	const [selectedTime, setSelectedTime] = useState(new Date());
+	const dispatch = useDispatch();
+	const selectedDate = useSelector(selectDate);
 
-	const handleTimeChange = (time) => {
-		setSelectedTime(time);
+	const handleChange = (date) => {
+		if (date) {
+			dispatch(addDate(date.toString()));
+		}
 	};
 	return (
 		<div role="time-picker">
@@ -17,8 +22,8 @@ const TimePicker = () => {
 				<KeyboardTimePicker
 					margin="normal"
 					id="time-picker"
-					value={selectedTime}
-					onChange={handleTimeChange}
+					value={selectedDate}
+					onChange={handleChange}
 					KeyboardButtonProps={{
 						'aria-label': 'change time',
 					}}

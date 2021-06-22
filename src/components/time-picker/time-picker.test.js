@@ -8,7 +8,7 @@ import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import TimePicker from './time-picker';
 
-describe('Date Picker', () => {
+describe('Time Picker', () => {
 	const time = '12:24 PM';
 	beforeEach(() => {
 		render(
@@ -27,7 +27,7 @@ describe('Date Picker', () => {
 	});
 
 	test('when the time is changed, the time picker value matches the text', () => {
-		userEvent.type(screen.getByRole('textbox'), '{selectall}{del}' + time + '{enter}');
+		userEvent.type(screen.getByRole('textbox'), '{selectall}{del}' + '12:24P' + '{enter}');
 		expect(screen.getByRole('textbox')).toHaveValue(time);
 	});
 });

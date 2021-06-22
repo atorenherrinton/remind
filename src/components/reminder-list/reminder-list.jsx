@@ -28,7 +28,13 @@ const ReminderList = () => {
 		<div title="reminder-list">
 			<List className={classes.list} role="list">
 				{reminders.map((reminder, i) => (
-					<ReminderItem key={i} id={reminder.id} date={reminder.date} title={reminder.title} />
+					<ReminderItem
+						key={i}
+						id={reminder.id}
+						date={reminder.date}
+						time={reminder.time}
+						title={reminder.title}
+					/>
 				))}
 			</List>
 
