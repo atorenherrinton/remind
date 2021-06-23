@@ -130,4 +130,16 @@ describe('Main', () => {
 		const updatedReminders = store.getState().reminders.reminders;
 		expect(updatedReminders[0].time).toBeTruthy();
 	});
+
+	test('when the reminder card is opened, the time switch turned on and then off should delete the time', () => {
+		store.dispatch(reset());
+		const reminder = { title: 'take out the trash', id: uuidv4() };
+		store.dispatch(setReminders(reminder));
+		userEvent.click(screen.getAllByRole('open-reminder-card')[0]);
+		userEvent.click(screen.getByRole('toggle-time-switch'));
+		userEvent.click(screen.getByRole('toggle-date-switch'));
+		userEvent.click(screen.getByRole('done'));
+		const updatedReminders = store.getState().reminders.reminders;
+		expect(updatedReminders[0].time).toBeFalsy();
+	});
 });

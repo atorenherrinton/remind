@@ -1,12 +1,20 @@
 /** @format */
 import 'date-fns';
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addDate, selectDate } from '../../slices/reminders-slice';
 import DateFnsUtils from '@date-io/date-fns';
+import { makeStyles } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 
+const useStyles = makeStyles((theme) => ({
+	root: {
+		marginTop: 0,
+	},
+}));
+
 const DatePicker = () => {
+	const classes = useStyles();
 	const dispatch = useDispatch();
 	const selectedDate = useSelector(selectDate);
 
@@ -17,9 +25,10 @@ const DatePicker = () => {
 	};
 
 	return (
-		<div role="date-picker">
-			<MuiPickersUtilsProvider utils={DateFnsUtils}>
+		<div role="date-picker" >
+			<MuiPickersUtilsProvider  utils={DateFnsUtils}>
 				<KeyboardDatePicker
+					className={classes.root}
 					margin="normal"
 					id="date-picker-dialog"
 					format="MM/dd/yyyy"

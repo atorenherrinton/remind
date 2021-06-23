@@ -342,15 +342,6 @@ describe('Reminder Card', () => {
 		expect(screen.getByRole('toggle-date-switch')).toHaveClass('Mui-checked');
 	});
 
-	test('renders an actions container', () => {
-		const reminder = { title: 'take out the trash', id: uuidv4() };
-		render(
-			<Provider store={store}>
-				<ReminderCard title={reminder.title} id={reminder.id} />
-			</Provider>
-		);
-		expect(screen.getByRole('actions'));
-	});
 
 	test('if there is already a date, the toggle is open by default', () => {
 		const reminder = { title: 'take out the trash', date: new Date(), id: uuidv4() };

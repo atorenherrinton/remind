@@ -36,6 +36,12 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor: theme.palette.background.paper,
 		width: '100%',
 	},
+	datePicker: {
+		marginBottom: '0.5rem',
+	},
+	done: {
+		marginTop: '0.5rem',
+	},
 }));
 
 const ReminderCard = (props) => {
@@ -70,6 +76,7 @@ const ReminderCard = (props) => {
 						<ListItem role="reminder-header">
 							{toggleInput ? (
 								<TextField
+									fullWidth
 									onChange={(event) => {
 										setTitle(event.target.value);
 									}}
@@ -81,6 +88,7 @@ const ReminderCard = (props) => {
 											}
 										}
 									}}
+									multiline
 									role="text-field"
 									value={title}
 								/>
@@ -93,20 +101,6 @@ const ReminderCard = (props) => {
 									role="item-text"
 								/>
 							)}
-							<ListItemSecondaryAction role="close-reminder">
-								<Button
-									color="primary"
-									onClick={() => {
-										dispatch(changeTitle(title));
-										dispatch(saveChanges());
-										dispatch(setToggleMoreOptions());
-									}}
-									role="done"
-									size="small"
-								>
-									Done
-								</Button>
-							</ListItemSecondaryAction>
 						</ListItem>
 						<ListItem role="date-selector">
 							<ListItemIcon role="date-icon-container">
@@ -122,6 +116,7 @@ const ReminderCard = (props) => {
 											dispatch(addDate(new Date().toString()));
 										} else {
 											dispatch(removeDate());
+											dispatch(removeTime());
 										}
 
 										setToggleDatePicker(!toggleDatePicker);
@@ -135,7 +130,7 @@ const ReminderCard = (props) => {
 							</ListItemSecondaryAction>
 						</ListItem>
 						{toggleDatePicker ? (
-							<ListItem role="date-picker-container">
+							<ListItem className={classes.datePicker} role="date-picker-container">
 								<DatePicker id={reminder.id} />
 							</ListItem>
 						) : null}
@@ -174,9 +169,24 @@ const ReminderCard = (props) => {
 								<TimePicker id={reminder.id} />
 							</ListItem>
 						) : null}
+						<ListItem className={classes.done} role="close-reminder">
+							<Button
+								color="primary"
+								fullWidth
+								onClick={() => {
+									dispatch(changeTitle(title));
+									dispatch(saveChanges());
+									dispatch(setToggleMoreOptions());
+								}}
+								role="done"
+								size="small"
+								variant="outlined"
+							>
+								Done
+							</Button>
+						</ListItem>
 					</List>
 				</CardContent>
-				<CardActions role="actions"></CardActions>
 			</Card>
 		</div>
 	);

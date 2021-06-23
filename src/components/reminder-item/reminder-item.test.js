@@ -10,37 +10,106 @@ import userEvent from '@testing-library/user-event';
 import ReminderItem from '../reminder-item/reminder-item';
 
 describe('Reminder', () => {
-	const reminder = { title: 'take out the trash', id: uuidv4() };
-	beforeEach(() => {
+	test('renders a listItem', () => {
+		const reminder = {
+			title: 'take out the trash',
+		};
 		render(
 			<Provider store={store}>
 				<ReminderItem title={reminder.title} />
 			</Provider>
 		);
-	});
-
-	test('renders a listItem', () => {
 		expect(screen.getByTitle('reminder-item'));
 	});
 
 	test('renders a listItemText', () => {
+		const reminder = {
+			title: 'take out the trash',
+		};
+		render(
+			<Provider store={store}>
+				<ReminderItem title={reminder.title} />
+			</Provider>
+		);
 		expect(screen.getByRole('item-text'));
 	});
 
 	test('listItemText contains correct text', () => {
-		expect(screen.getAllByText(reminder.title)).toHaveLength(1);
+		const reminder = {
+			title: 'take out the trash',
+		};
+		render(
+			<Provider store={store}>
+				<ReminderItem title={reminder.title} />
+			</Provider>
+		);
+		expect(screen.getByText(reminder.title));
 	});
 
 	test('renders a ListItemSecondaryAction', () => {
+		const reminder = {
+			title: 'take out the trash',
+		};
+		render(
+			<Provider store={store}>
+				<ReminderItem title={reminder.title} />
+			</Provider>
+		);
 		expect(screen.getByRole('secondary-action'));
 	});
 
 	test('renders a checkbox', () => {
+		const reminder = {
+			title: 'take out the trash',
+		};
+		render(
+			<Provider store={store}>
+				<ReminderItem title={reminder.title} />
+			</Provider>
+		);
 		expect(screen.getByTestId('checkbox'));
 	});
 
 	test('checkbox state changes on click', () => {
+		const reminder = {
+			title: 'take out the trash',
+		};
+		render(
+			<Provider store={store}>
+				<ReminderItem title={reminder.title} />
+			</Provider>
+		);
 		userEvent.click(screen.getByTestId('checkbox'));
 		expect(screen.getByTestId('checkbox')).toHaveClass('Mui-checked');
+	});
+
+	test('if there is date and no time, it only displays a date', () => {
+		const reminder = {
+			date: 'Wed Jun 23 2021 23:15:30 GMT-0700 (Pacific Daylight Time)',
+			title: 'take out the trash',
+			time: false,
+		};
+		render(
+			<Provider store={store}>
+				<ReminderItem date={reminder.date} time={reminder.time} title={reminder.title} />
+			</Provider>
+		);
+		const date = 'Wed, June 23, 2021';
+		expect(screen.getByText(date));
+	});
+
+	test('if there is date and time, a date and a time', () => {
+		const reminder = {
+			date: 'Wed Jun 23 2021 23:15:30 GMT-0700 (Pacific Daylight Time)',
+			title: 'take out the trash',
+			time: true,
+		};
+		render(
+			<Provider store={store}>
+				<ReminderItem date={reminder.date} time={reminder.time} title={reminder.title} />
+			</Provider>
+		);
+		const date = 'Wed, June 23, 2021, 11:15 PM';
+		expect(screen.getByText(date));
 	});
 });
