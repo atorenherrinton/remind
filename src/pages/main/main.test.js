@@ -96,6 +96,27 @@ describe('Main', () => {
 		expect(updatedReminders[0].date === 'Wed Dec 12 2012 00:00:00 GMT-0800 (Pacific Standard Time)').toBeTruthy();
 	});
 
+	test('when the reminder card is open and the delete reminder option is clicked the reminder is deleted from the store', () => {
+		store.dispatch(reset());
+		const reminder = { title: 'take out the trash', id: uuidv4() };
+		store.dispatch(setReminders(reminder));
+		userEvent.click(screen.getAllByRole('open-reminder-card')[0]);
+		userEvent.click(screen.getByRole('toggle-more-options'));
+		userEvent.click(screen.getByRole('delete-reminder'));
+		const updatedReminders = store.getState().reminders.reminders;
+		expect(updatedReminders.length).toEqual(0);
+	});
+
+	test('when the reminder card is open and the delete reminder option is clicked the reminder card is closed', () => {
+		store.dispatch(reset());
+		const reminder = { title: 'take out the trash', id: uuidv4() };
+		store.dispatch(setReminders(reminder));
+		userEvent.click(screen.getAllByRole('open-reminder-card')[0]);
+		userEvent.click(screen.getByRole('toggle-more-options'));
+		userEvent.click(screen.getByRole('delete-reminder'));
+		expect(screen.getByTitle('reminder-card')).not.toBeInTheDocument();
+	});
+
 	test('when the reminder card is opened, the date switch turned on and then off should delete the date', () => {
 		store.dispatch(reset());
 		const reminder = { title: 'take out the trash', id: uuidv4() };

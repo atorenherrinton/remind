@@ -20,6 +20,10 @@ export const remindersSlice = createSlice({
 		changeTitle: (state, action) => {
 			state.reminder.title = action.payload;
 		},
+		deleteReminder: (state, action) => {
+			const updatedReminders = state.reminders.filter((reminder) => reminder.id !== action.payload);
+			state.reminders = updatedReminders;
+		},
 		removeDate: (state) => {
 			state.reminder.date = null;
 		},
@@ -53,6 +57,7 @@ export const {
 	addDate,
 	addTime,
 	changeTitle,
+	deleteReminder,
 	removeDate,
 	removeTime,
 	reset,

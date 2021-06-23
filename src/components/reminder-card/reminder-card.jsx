@@ -6,6 +6,7 @@ import {
 	addDate,
 	addTime,
 	changeTitle,
+	deleteReminder,
 	removeDate,
 	removeTime,
 	saveChanges,
@@ -15,17 +16,21 @@ import {
 	setToggleMoreOptions,
 } from '../../slices/reminders-slice';
 import Button from '@material-ui/core/Button';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import DatePicker from '../date-picker/date-picker';
 import DateRange from '@material-ui/icons/DateRange';
+import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MoreVert from '@material-ui/icons/MoreVert';
 import TextField from '@material-ui/core/TextField';
 import Schedule from '@material-ui/icons/Schedule';
 import Switch from '@material-ui/core/Switch';
@@ -45,12 +50,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ReminderCard = (props) => {
+	const [anchorEl, setAnchorEl] = useState(null);
 	const classes = useStyles();
 	const dispatch = useDispatch();
 	const date = useSelector(selectDate) || props.date;
 	const time = useSelector(selectTime) || props.time;
+	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 	const [isLoaded, setIsLoaded] = useState(false);
-	const reminder = useSelector(selectReminder);
+	const reminder = useSelector(selectReminder) || props.reminder;
 	const [title, setTitle] = useState(reminder.title || props.title);
 	const [toggleInput, setToggleInput] = useState(false);
 	const [toggleDatePicker, setToggleDatePicker] = useState(false);
@@ -75,23 +82,34 @@ const ReminderCard = (props) => {
 					<List role="list">
 						<ListItem role="reminder-header">
 							{toggleInput ? (
-								<TextField
-									fullWidth
-									onChange={(event) => {
-										setTitle(event.target.value);
+								<ClickAwayListener
+									onClickAway={() => {
+										setToggleInput(false);
 									}}
-									onKeyPress={(event) => {
-										if (event.key === 'Enter') {
-											if (title.length < 1) {
-											} else {
-												setToggleInput(false);
+								>
+									<TextField
+										fullWidth
+										onChange={(event) => {
+											setTitle(event.target.value);
+											if (event.target.value.length < 1) {
+												setIsButtonDisabled(true);
+											} else if (event.target.value.length > 0 && isButtonDisabled) {
+												setIsButtonDisabled(false);
 											}
-										}
-									}}
-									multiline
-									role="text-field"
-									value={title}
-								/>
+										}}
+										onKeyPress={(event) => {
+											if (event.key === 'Enter') {
+												event.preventDefault();
+												if (title.length > 0) {
+													setToggleInput(false);
+												}
+											}
+										}}
+										multiline
+										role="text-field"
+										value={title}
+									/>
+								</ClickAwayListener>
 							) : (
 								<ListItemText
 									onClick={() => {
@@ -101,6 +119,39 @@ const ReminderCard = (props) => {
 									role="item-text"
 								/>
 							)}
+							<ListItemSecondaryAction>
+								<IconButton
+									aria-label="toggle-more-options"
+									onClick={(event) => {
+										setAnchorEl(event.currentTarget);
+									}}
+									role="toggle-more-options"
+									size="small"
+								>
+									<MoreVert fontSize="inherit" />
+								</IconButton>
+								<Menu
+									id="simple-menu"
+									anchorEl={anchorEl}
+									keepMounted
+									open={Boolean(anchorEl)}
+									onClose={() => {
+										setAnchorEl(null);
+									}}
+									role="more-options-menu"
+								>
+									<MenuItem
+										onClick={() => {
+											setAnchorEl(null);
+											dispatch(deleteReminder(reminder.id));
+											dispatch(setToggleMoreOptions());
+										}}
+										role="delete-reminder"
+									>
+										Delete Reminder
+									</MenuItem>
+								</Menu>
+							</ListItemSecondaryAction>
 						</ListItem>
 						<ListItem role="date-selector">
 							<ListItemIcon role="date-icon-container">
@@ -172,6 +223,7 @@ const ReminderCard = (props) => {
 						<ListItem className={classes.done} role="close-reminder">
 							<Button
 								color="primary"
+								disabled={isButtonDisabled}
 								fullWidth
 								onClick={() => {
 									dispatch(changeTitle(title));

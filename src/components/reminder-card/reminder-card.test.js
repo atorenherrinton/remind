@@ -3,7 +3,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { store } from '../../app/store';
-import { cleanup, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { reset, setReminders } from '../../slices/reminders-slice';
 import '@testing-library/jest-dom';
 import { v4 as uuidv4 } from 'uuid';
@@ -55,17 +55,39 @@ describe('Reminder Card', () => {
 		expect(screen.getByRole('reminder-header'));
 	});
 
-	test('renders a secondary action container', () => {
+	test('renders a toggle more options button', () => {
 		const reminder = { title: 'take out the trash', id: uuidv4() };
 		render(
 			<Provider store={store}>
 				<ReminderCard title={reminder.title} id={reminder.id} />
 			</Provider>
 		);
-		expect(screen.getAllByRole('close-reminder'));
+		expect(screen.getByRole('toggle-more-options'));
 	});
 
-	test('renders a button', () => {
+	test('renders a more options menu when the more options button is clicked', () => {
+		const reminder = { title: 'take out the trash', id: uuidv4() };
+		render(
+			<Provider store={store}>
+				<ReminderCard title={reminder.title} id={reminder.id} />
+			</Provider>
+		);
+		userEvent.click(screen.getByRole('toggle-more-options'));
+		expect(screen.getByRole('more-options-menu'));
+	});
+
+	test('renders a delete reminder option when the more options button is clicked', () => {
+		const reminder = { title: 'take out the trash', id: uuidv4() };
+		render(
+			<Provider store={store}>
+				<ReminderCard title={reminder.title} id={reminder.id} />
+			</Provider>
+		);
+		userEvent.click(screen.getByRole('toggle-more-options'));
+		expect(screen.getByRole('delete-reminder'));
+	});
+
+	test('renders a done button', () => {
 		const reminder = { title: 'take out the trash', id: uuidv4() };
 		render(
 			<Provider store={store}>
@@ -130,6 +152,42 @@ describe('Reminder Card', () => {
 		userEvent.click(screen.getByRole('item-text'));
 		userEvent.type(screen.getByDisplayValue(reminder.title), '{selectall}{del}Hello everyone!{enter}');
 		expect(screen.getByRole('item-text')).toHaveTextContent('Hello everyone!');
+	});
+
+	test('the textfield will not change into a listItemText if the textfield is empty', () => {
+		const reminder = { title: 'take out the trash', id: uuidv4() };
+		render(
+			<Provider store={store}>
+				<ReminderCard title={reminder.title} id={reminder.id} />
+			</Provider>
+		);
+		userEvent.click(screen.getByRole('item-text'));
+		userEvent.type(screen.getByDisplayValue(reminder.title), '{selectall}{del}{enter}{enter}');
+		expect(screen.getByRole('text-field')).toBeInTheDocument();
+	});
+
+	test('the done button is disabled if the textfield is empty', () => {
+		const reminder = { title: 'take out the trash', id: uuidv4() };
+		render(
+			<Provider store={store}>
+				<ReminderCard title={reminder.title} id={reminder.id} />
+			</Provider>
+		);
+		userEvent.click(screen.getByRole('item-text'));
+		userEvent.type(screen.getByDisplayValue(reminder.title), '{selectall}{del}');
+		expect(screen.getByRole('done')).toHaveClass('Mui-disabled');
+	});
+
+	test('the done button is disabled if the textfield is empty', () => {
+		const reminder = { title: 'take out the trash', id: uuidv4() };
+		render(
+			<Provider store={store}>
+				<ReminderCard title={reminder.title} id={reminder.id} />
+			</Provider>
+		);
+		userEvent.click(screen.getByRole('item-text'));
+		userEvent.type(screen.getByDisplayValue(reminder.title), '{selectall}{del}re-enable test');
+		expect(screen.getByRole('done')).not.toHaveClass('Mui-disabled');
 	});
 
 	test('renders a list item as a date selector', () => {
@@ -341,7 +399,6 @@ describe('Reminder Card', () => {
 		userEvent.dblClick(screen.getByRole('toggle-time-switch'));
 		expect(screen.getByRole('toggle-date-switch')).toHaveClass('Mui-checked');
 	});
-
 
 	test('if there is already a date, the toggle is open by default', () => {
 		const reminder = { title: 'take out the trash', date: new Date(), id: uuidv4() };
