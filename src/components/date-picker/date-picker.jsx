@@ -25,7 +25,7 @@ const DatePicker = () => {
 	};
 
 	return (
-		<div role="date-picker" >
+		<div title="date-picker" >
 			<MuiPickersUtilsProvider  utils={DateFnsUtils}>
 				<KeyboardDatePicker
 					className={classes.root}
@@ -35,7 +35,7 @@ const DatePicker = () => {
 					value={selectedDate}
 					onChange={handleChange}
 					KeyboardButtonProps={{
-						'aria-label': 'change date',
+						'aria-label': 'change-date',
 					}}
 				/>
 			</MuiPickersUtilsProvider>

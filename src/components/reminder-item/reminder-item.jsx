@@ -7,7 +7,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
-import Typography from '@material-ui/core/Typography';
 
 const ReminderItem = ({ id, date, time, title }) => {
 	const createDisplayDate = (date) => {

@@ -25,7 +25,7 @@ const TimePicker = () => {
 		}
 	};
 	return (
-		<div role="time-picker">
+		<div title="time-picker">
 			<MuiPickersUtilsProvider utils={DateFnsUtils}>
 				<KeyboardTimePicker
 					className={classes.input}

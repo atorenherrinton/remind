@@ -20,7 +20,7 @@ describe('Date Picker', () => {
 	});
 
 	test('renders a date picker container', () => {
-		expect(screen.getByRole('date-picker'));
+		expect(screen.getByTitle('date-picker'));
 	});
 
 	test('renders a date picker input', () => {

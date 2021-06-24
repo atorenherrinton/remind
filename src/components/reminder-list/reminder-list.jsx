@@ -6,14 +6,20 @@ import { v4 as uuidv4 } from 'uuid';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import ReminderItem from '../reminder-item/reminder-item';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
+	heading: {
+		textAlign: 'left',
+	},
 	list: {
 		backgroundColor: theme.palette.background.paper,
 		width: '100%',
+	},
+	textField: {
+		padding: 0,
 	},
 }));
 
@@ -26,6 +32,9 @@ const ReminderList = () => {
 
 	return (
 		<div title="reminder-list">
+			<Typography className={classes.heading} role="heading" variant="h5">
+				All Reminders
+			</Typography>
 			<List className={classes.list} role="list">
 				{reminders.map((reminder, i) => (
 					<ReminderItem
@@ -39,28 +48,27 @@ const ReminderList = () => {
 			</List>
 
 			{toggleInput ? (
-				<List className={classes.list} title="add-new-reminder">
-					<ListItem role="reminder-item">
-						<TextField
-							autoComplete="off"
-							color="secondary"
-							fullWidth
-							id="outlined-basic"
-							onChange={(event) => {
-								setTextField(event.target.value);
-							}}
-							onKeyPress={(event) => {
-								if (event.key === 'Enter' && textField.length > 0) {
-									dispatch(setReminders({ id: uuidv4(), title: textField }));
-									setTextField('');
-									setToggleInput(false);
-								}
-							}}
-							size="small"
-							value={textField}
-						/>
-					</ListItem>
-				</List>
+				<TextField
+					autoComplete="off"
+					autoFocus
+					className={classes.textField}
+					color="secondary"
+					fullWidth
+					id="outlined-basic"
+					onChange={(event) => {
+						setTextField(event.target.value);
+					}}
+					onKeyPress={(event) => {
+						if (event.key === 'Enter' && textField.length > 0) {
+							dispatch(setReminders({ id: uuidv4(), title: textField }));
+							setTextField('');
+							setToggleInput(false);
+						}
+					}}
+					size="small"
+					value={textField}
+					variant="outlined"
+				/>
 			) : (
 				<Button
 					color="secondary"

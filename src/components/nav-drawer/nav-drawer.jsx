@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 const NavDrawer = (props) => {
 	const classes = useStyles();
 	const listItems = props.listItems || [
-		{ itemText: 'Important', icon: 'Today' },
+		{ itemText: 'All Reminders', icon: 'Today' },
 		{ itemText: 'Scheduled', icon: 'Schedule' },
 		{ itemText: 'Completed', icon: 'CheckCircle' },
 	];

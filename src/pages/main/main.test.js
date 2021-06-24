@@ -20,8 +20,8 @@ describe('Main', () => {
 		);
 	});
 
-	test('renders a header', () => {
-		expect(screen.getByTitle('header'));
+	test('renders a navbar', () => {
+		expect(screen.getByTitle('nav-bar'));
 	});
 
 	test('renders a grid container', () => {

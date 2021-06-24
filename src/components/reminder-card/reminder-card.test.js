@@ -25,6 +25,26 @@ describe('Reminder Card', () => {
 		expect(screen.getByRole('card'));
 	});
 
+	test('renders a reminder header', () => {
+		const reminder = { title: 'take out the trash', id: uuidv4() };
+		render(
+			<Provider store={store}>
+				<ReminderCard title={reminder.title} id={reminder.id} />
+			</Provider>
+		);
+		expect(screen.getByRole('reminder-header'));
+	});
+
+	test('renders a divider', () => {
+		const reminder = { title: 'take out the trash', id: uuidv4() };
+		render(
+			<Provider store={store}>
+				<ReminderCard title={reminder.title} id={reminder.id} />
+			</Provider>
+		);
+		expect(screen.getByRole('divider'));
+	});
+
 	test('renders CardContent', () => {
 		const reminder = { title: 'take out the trash', id: uuidv4() };
 		render(
@@ -43,16 +63,6 @@ describe('Reminder Card', () => {
 			</Provider>
 		);
 		expect(screen.getByRole('list'));
-	});
-
-	test('renders a reminder header list item', () => {
-		const reminder = { title: 'take out the trash', id: uuidv4() };
-		render(
-			<Provider store={store}>
-				<ReminderCard title={reminder.title} id={reminder.id} />
-			</Provider>
-		);
-		expect(screen.getByRole('reminder-header'));
 	});
 
 	test('renders a toggle more options button', () => {
@@ -375,7 +385,7 @@ describe('Reminder Card', () => {
 			</Provider>
 		);
 		userEvent.click(screen.getByRole('toggle-time-switch'));
-		expect(screen.getByRole('time-picker'));
+		expect(screen.getByTitle('time-picker'));
 	});
 
 	test('turning the time switch on toggles the time picker switch on', () => {

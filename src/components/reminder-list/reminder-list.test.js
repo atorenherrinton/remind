@@ -22,6 +22,10 @@ describe('Reminder List', () => {
 		store.dispatch(reset());
 	});
 
+	test('renders a heading', () => {
+		expect(screen.getByRole('heading'));
+	});
+
 	test('renders a list', () => {
 		expect(screen.getByRole('list'));
 	});
@@ -73,11 +77,6 @@ describe('Reminder List', () => {
 		expect(screen.getByRole('button')).toHaveTextContent('Add Reminder');
 	});
 
-	test('renders a list when button is clicked', () => {
-		userEvent.click(screen.getByRole('button'));
-		expect(screen.getByTitle('add-new-reminder'));
-	});
-
 	test('renders no listItem when component first renders', () => {
 		expect(screen.queryByRole('reminder-item')).not.toBeInTheDocument();
 	});
@@ -90,6 +89,11 @@ describe('Reminder List', () => {
 	test('renders a text field when button is clicked', () => {
 		userEvent.click(screen.getByRole('button'));
 		expect(screen.getByRole('textbox'));
+	});
+
+	test('renders a text field that autofocuses when button is clicked', () => {
+		userEvent.click(screen.getByRole('button'));
+		expect(screen.getByRole('textbox').parentElement).toHaveClass('Mui-focused');
 	});
 
 	test('the textfield has autocomplete turned off', () => {

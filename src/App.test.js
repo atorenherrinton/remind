@@ -7,7 +7,7 @@ import { render, screen } from '@testing-library/react';
 import App from './App';
 
 describe('App', () => {
-	beforeAll(() => {
+	beforeEach(() => {
 		render(
 			<Provider store={store}>
 				<App />
@@ -15,7 +15,11 @@ describe('App', () => {
 		);
 	});
 
-	test('renders the main application page', () => {
-		expect(screen.getAllByRole('main')).toHaveLength(1);
+	test('renders the authentication page if there is no user', () => {
+		expect(screen.getByTitle('authenticate'));
 	});
+	
+	// test('renders the main application page', () => {
+	// 	expect(screen.getByRole('main'))
+	// });
 });

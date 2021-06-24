@@ -19,7 +19,7 @@ describe('Time Picker', () => {
 	});
 
 	test('renders a time picker container', () => {
-		expect(screen.getByRole('time-picker'));
+		expect(screen.getByTitle('time-picker'));
 	});
 
 	test('renders a time picker input', () => {

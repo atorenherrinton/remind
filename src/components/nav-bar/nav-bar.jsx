@@ -23,11 +23,11 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const Header = () => {
+const NavBar = () => {
 	const classes = useStyles();
 
 	return (
-		<div className={classes.root} title="header">
+		<div className={classes.root} title="nav-bar">
 			<AppBar position="static" className={classes.appBar}>
 				<Toolbar>
 					<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
@@ -43,4 +43,4 @@ const Header = () => {
 	);
 };
 
-export default Header;
+export default NavBar;
