@@ -63,7 +63,7 @@ const ReminderCard = (props) => {
 	const [toggleDatePicker, setToggleDatePicker] = useState(false);
 	const [toggleTimePicker, setToggleTimePicker] = useState(false);
 
-	useEffect(() => {
+	const loadDueDateAndTime = () => {
 		if (!isLoaded) {
 			if (date) {
 				setToggleDatePicker(true);
@@ -73,6 +73,10 @@ const ReminderCard = (props) => {
 			}
 			setIsLoaded(true);
 		}
+	};
+
+	useEffect(() => {
+		loadDueDateAndTime();
 	}, [date, time, isLoaded]);
 
 	return (

@@ -98,6 +98,60 @@ describe('Reminder', () => {
 		expect(screen.getByText(date));
 	});
 
+	test('if the date is for today, Today should be displayed', () => {
+		const reminder = {
+			date: new Date(),
+			title: 'take out the trash',
+			time: false,
+		};
+		render(
+			<Provider store={store}>
+				<ReminderItem date={reminder.date} time={reminder.time} title={reminder.title} />
+			</Provider>
+		);
+		const date = 'Today';
+		expect(screen.getByText(date));
+	});
+
+	test('if the date is for today and a time, Today, and time should be displayed.', () => {
+		const reminder = {
+			date: new Date(),
+			title: 'take out the trash',
+			time: true,
+		};
+		render(
+			<Provider store={store}>
+				<ReminderItem date={reminder.date} time={reminder.time} title={reminder.title} />
+			</Provider>
+		);
+		const date =
+			'Today, ' +
+			new Date().toLocaleTimeString(undefined, {
+				hour: 'numeric',
+				minute: 'numeric',
+			});
+		expect(screen.getByText(date));
+	});
+
+	test('if the date is for tomorrow, Tomorrow should be displayed', () => {
+		const today = new Date();
+		const tomorrow = new Date(today);
+		tomorrow.setDate(tomorrow.getDate() + 1);
+
+		const reminder = {
+			date: tomorrow,
+			title: 'take out the trash',
+			time: false,
+		};
+		render(
+			<Provider store={store}>
+				<ReminderItem date={reminder.date} time={reminder.time} title={reminder.title} />
+			</Provider>
+		);
+		const date = 'Tomorrow';
+		expect(screen.getByText(date));
+	});
+
 	test('if there is date and time, a date and a time', () => {
 		const reminder = {
 			date: 'Wed Jun 23 2021 23:15:30 GMT-0700 (Pacific Daylight Time)',
@@ -110,6 +164,30 @@ describe('Reminder', () => {
 			</Provider>
 		);
 		const date = 'Wed, June 23, 2021, 11:15 PM';
+		expect(screen.getByText(date));
+	});
+
+	test('if the date is for tomorrow and time, Tomorrow, and time should be displayed', () => {
+		const today = new Date();
+		const tomorrow = new Date(today);
+		tomorrow.setDate(tomorrow.getDate() + 1);
+
+		const reminder = {
+			date: tomorrow,
+			title: 'take out the trash',
+			time: true,
+		};
+		render(
+			<Provider store={store}>
+				<ReminderItem date={reminder.date} time={reminder.time} title={reminder.title} />
+			</Provider>
+		);
+		const date =
+			'Tomorrow, ' +
+			tomorrow.toLocaleTimeString(undefined, {
+				hour: 'numeric',
+				minute: 'numeric',
+			});
 		expect(screen.getByText(date));
 	});
 });

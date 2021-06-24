@@ -114,7 +114,7 @@ describe('Main', () => {
 		userEvent.click(screen.getAllByRole('open-reminder-card')[0]);
 		userEvent.click(screen.getByRole('toggle-more-options'));
 		userEvent.click(screen.getByRole('delete-reminder'));
-		expect(screen.getByTitle('reminder-card')).not.toBeInTheDocument();
+		expect(screen.queryByTitle('reminder-card')).not.toBeInTheDocument();
 	});
 
 	test('when the reminder card is opened, the date switch turned on and then off should delete the date', () => {
