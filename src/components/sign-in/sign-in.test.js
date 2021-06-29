@@ -3,17 +3,17 @@
 import React from "react";
 import { Provider } from "react-redux";
 import { store } from "../../app/store";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { reset, setErrorMessage } from "../../slices/authenticate-slice";
 import "@testing-library/jest-dom";
+import SignIn from "./sign-in";
 import userEvent from "@testing-library/user-event";
-import SignUp from "./sign-up";
 
-describe("Sign Up", () => {
+describe("Sign In", () => {
 	beforeEach(() => {
 		render(
 			<Provider store={store}>
-				<SignUp />
+				<SignIn />
 			</Provider>
 		);
 	});
@@ -26,8 +26,8 @@ describe("Sign Up", () => {
 		expect(screen.getByRole("card-header"));
 	});
 
-	test("the card header displays Sign Up", () => {
-		expect(screen.getByRole("card-header")).toHaveTextContent("Sign up");
+	test("the card header displays Sign in", () => {
+		expect(screen.getByRole("card-header")).toHaveTextContent("Sign in");
 	});
 
 	test("renders a divider", () => {
@@ -71,29 +71,29 @@ describe("Sign Up", () => {
 		expect(screen.getByLabelText("Password")).toHaveValue("password123");
 	});
 
-	test("renders a sign up button", () => {
-		expect(screen.getByRole("sign-up"));
+	test("renders a sign in button", () => {
+		expect(screen.getByRole("sign-in"));
 	});
 
-	test("sign up button displays text Sign up", () => {
-		expect(screen.getByRole("sign-up")).toHaveTextContent("Sign up");
+	test("sign up button displays text Sign in", () => {
+		expect(screen.getByRole("sign-in")).toHaveTextContent("Sign in");
 	});
 
-	test("renders a Continue with Google button", () => {
+	test("renders a continue with Google button", () => {
 		expect(screen.getByRole("continue-with-google"));
 	});
 
-	test("renders a sign in instead button", () => {
-		expect(screen.getByRole("sign-in-instead"));
+	test("renders a sign up instead button", () => {
+		expect(screen.getByRole("sign-up-instead"));
 	});
 
-	test("sign in instead button displays text Sign in instead", () => {
-		expect(screen.getByRole("sign-in-instead")).toHaveTextContent("Already have an account? Sign in instead");
+	test("sign in instead button displays text Sign up instead", () => {
+		expect(screen.getByRole("sign-up-instead")).toHaveTextContent("Don't have an account? Sign up instead");
 	});
 
-	test("if there is a sign up error, an error alert appears", () => {
+	test("if there is a sign in error, an error alert appears", () => {
+		store.dispatch(reset());
 		store.dispatch(setErrorMessage("No such user exists"));
 		expect(screen.getByTitle("error-alert"));
 	});
-
 });

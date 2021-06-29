@@ -2,14 +2,7 @@
 
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-	selectEmail,
-	selectErrorMessage,
-	setEmail,
-	setErrorMessage,
-	setIsNewUser,
-	setUid,
-} from "../../slices/authenticate-slice";
+import { selectEmail, selectErrorMessage, setEmail, setIsNewUser, setUid } from "../../slices/authenticate-slice";
 import Avatar from "@material-ui/core/Avatar";
 import { blue } from "@material-ui/core/colors";
 import Button from "@material-ui/core/Button";
@@ -19,11 +12,11 @@ import CardHeader from "@material-ui/core/CardHeader";
 import clsx from "clsx";
 import Divider from "@material-ui/core/Divider";
 import ErrorAlert from "../error-alert/error-alert";
+import firebase from "../../firebase/firebase";
 import GoogleSignInButton from "../google-signin-button/google-signin-button";
 import IconButton from "@material-ui/core/IconButton";
 import InputLabel from "@material-ui/core/InputLabel";
 import InputAdornment from "@material-ui/core/InputAdornment";
-import firebase from "../../firebase/firebase";
 import FormControl from "@material-ui/core/FormControl";
 import { makeStyles } from "@material-ui/core/styles";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
@@ -51,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const SignUp = () => {
+const SignIn = () => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
 	const email = useSelector(selectEmail);
@@ -59,28 +52,28 @@ const SignUp = () => {
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 
-	const handleSignUp = () => {
+	const handleSignIn = () => {
 		firebase
 			.auth()
-			.createUserWithEmailAndPassword(email, password)
+			.signInWithEmailAndPassword(email, password)
 			.then((userCredential) => {
 				// Signed in
 				const user = userCredential.user;
 				dispatch(setUid(user.uid));
 			})
 			.catch((error) => {
-				dispatch(setErrorMessage(error.message));
+				console.log(error.message);
 			});
 	};
 
 	return (
-		<div title="sign-up">
+		<div title="sign-in">
 			<Card role="card">
 				<CardHeader
 					avatar={<Avatar aria-label="remind" className={classes.avatar} />}
 					className={classes.header}
 					role="card-header"
-					title="Sign up"
+					title="Sign in"
 				/>
 				<Divider role="divider" />
 				<CardContent className={classes.content} role="card-content">
@@ -94,7 +87,6 @@ const SignUp = () => {
 						value={email}
 						variant="outlined"
 					/>
-
 					<FormControl
 						className={(clsx(classes.margin, classes.textField), classes.password)}
 						fullWidth
@@ -105,7 +97,6 @@ const SignUp = () => {
 							Password
 						</InputLabel>
 						<OutlinedInput
-							autoComplete="off"
 							endAdornment={
 								<InputAdornment position="end">
 									<IconButton
@@ -137,11 +128,11 @@ const SignUp = () => {
 						className={classes.button}
 						color="primary"
 						fullWidth
-						onClick={handleSignUp}
-						role="sign-up"
+						onClick={handleSignIn}
+						role="sign-in"
 						variant="contained"
 					>
-						Sign up
+						Sign in
 					</Button>
 					<GoogleSignInButton />
 					<Button
@@ -151,10 +142,10 @@ const SignUp = () => {
 						onClick={() => {
 							dispatch(setIsNewUser());
 						}}
-						role="sign-in-instead"
+						role="sign-up-instead"
 						variant="text"
 					>
-						Already have an account? Sign in instead
+						Don't have an account? Sign up instead
 					</Button>
 				</CardContent>
 			</Card>
@@ -162,4 +153,4 @@ const SignUp = () => {
 	);
 };
 
-export default SignUp;
+export default SignIn;

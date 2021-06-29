@@ -1,12 +1,14 @@
 /** @format */
 
-import { configureStore } from '@reduxjs/toolkit';
-import authenticateReducer from '../slices/authenticate-slice';
-import remindersReducer from '../slices/reminders-slice';
+import { configureStore } from "@reduxjs/toolkit";
+import authenticateReducer from "../slices/authenticate-slice";
+import navDrawerReducer from "../slices/nav-drawer-slice";
+import remindersReducer from "../slices/reminders-slice";
 
 export const store = configureStore({
 	reducer: {
 		authenticate: authenticateReducer,
+		navDrawer: navDrawerReducer,
 		reminders: remindersReducer,
 	},
 });

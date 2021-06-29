@@ -1,15 +1,13 @@
 /** @format */
 
-import React from 'react';
-import Authenticate from './pages/authenticate/authenticate';
-import Main from './pages/main/main';
+import React from "react";
+import { useSelector } from "react-redux";
+import { selectUid } from "./slices/authenticate-slice";
+import Authenticate from "./pages/authenticate/authenticate";
+import Main from "./pages/main/main";
 
 const App = () => {
-	return (
-		<div>
-			<Authenticate />
-			{/* <Main /> */}
-		</div>
-	);
+	const uid = useSelector(selectUid);
+	return <div>{uid ? <Main /> : <Authenticate />}</div>;
 };
 export default App;
