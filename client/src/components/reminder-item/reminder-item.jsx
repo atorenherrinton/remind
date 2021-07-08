@@ -71,14 +71,15 @@ const ReminderItem = ({ id, date, isCompleted, time, timestamp, title }) => {
 	};
 
 	return (
-		<div title="reminder-item">
+		<div id="reminder-item">
 			<ListItem
+				button
+				id="open-reminder-card"
 				onClick={() => {
 					dispatch(setReminder({ id, date, time, timestamp, title }));
 					dispatch(setToggleMoreOptions());
 				}}
 				role="open-reminder-card"
-				button
 			>
 				<ListItemText primary={title} secondary={displayDate} role="item-text" />
 				<ListItemSecondaryAction role="secondary-action">
@@ -86,6 +87,7 @@ const ReminderItem = ({ id, date, isCompleted, time, timestamp, title }) => {
 						checked={isChecked}
 						data-testid="checkbox"
 						disableRipple
+						id="checkbox"
 						edge="end"
 						onClick={handleSetCompleted}
 						tabIndex={-1}

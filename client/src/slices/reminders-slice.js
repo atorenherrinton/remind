@@ -6,9 +6,11 @@ export const remindersSlice = createSlice({
 	name: "reminders",
 	initialState: {
 		reminder: {},
-		reminders: [],
+		todos: [],
+		scheduled: [],
+		completed: [],
 		toggleMoreOptions: false,
-		whichReminders: "todos",
+		whichReminders: "Todos",
 	},
 	// The `reducers` field lets us define reducers and generate associated actions
 	reducers: {
@@ -29,20 +31,29 @@ export const remindersSlice = createSlice({
 		},
 		reset: (state) => {
 			state.reminder = {};
-			state.reminders = [];
+			state.todos = [];
+			state.scheduled = [];
+			state.completed = [];
 			state.toggleMoreOptions = false;
+			state.whichReminders = "Todos";
 		},
 		setReminder: (state, action) => {
 			state.reminder = action.payload;
 		},
-		setReminders: (state, action) => {
-			state.reminders = action.payload;
+		setTodos: (state, action) => {
+			state.todos = action.payload;
+		},
+		setScheduled: (state, action) => {
+			state.scheduled = action.payload;
+		},
+		setCompleted: (state, action) => {
+			state.completed = action.payload;
 		},
 		setToggleMoreOptions: (state) => {
 			state.toggleMoreOptions = !state.toggleMoreOptions;
 		},
 		setWhichReminders: (state, action) => {
-			state.toggleMoreOptions = action.payload;
+			state.whichReminders = action.payload;
 		},
 	},
 });
@@ -58,7 +69,9 @@ export const {
 	saveChanges,
 	setDate,
 	setReminder,
-	setReminders,
+	setTodos,
+	setScheduled,
+	setCompleted,
 	setToggleMoreOptions,
 	setWhichReminders,
 } = remindersSlice.actions;
@@ -69,7 +82,9 @@ export const {
 export const selectDate = (state) => state.reminders.reminder.date;
 export const selectTime = (state) => state.reminders.reminder.time;
 export const selectReminder = (state) => state.reminders.reminder;
-export const selectReminders = (state) => state.reminders.reminders;
+export const selectTodos = (state) => state.reminders.todos;
+export const selectScheduled = (state) => state.reminders.scheduled;
+export const selectCompleted = (state) => state.reminders.completed;
 export const selectReminderId = (state) => state.reminders.reminderId;
 export const selectToggleMoreOptions = (state) => state.reminders.toggleMoreOptions;
 export const selectWhichReminders = (state) => state.reminders.whichReminders;

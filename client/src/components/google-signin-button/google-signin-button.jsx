@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const GoogleSignInButton = ({ text }) => {
+const GoogleSignInButton = () => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
 	const provider = new firebase.auth.GoogleAuthProvider();
@@ -31,6 +31,7 @@ const GoogleSignInButton = ({ text }) => {
 			.catch((error) => {
 				// Handle Errors here.
 				const errorMessage = error.message;
+				console.log(errorMessage);
 			});
 	};
 
@@ -38,6 +39,7 @@ const GoogleSignInButton = ({ text }) => {
 		<Button
 			className={classes.root}
 			color="secondary"
+			id="continue-with-google"
 			fullWidth
 			onClick={handleGoogleSignIn}
 			role="continue-with-google"

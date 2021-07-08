@@ -67,6 +67,7 @@ const SignIn = () => {
 				// Signed in
 				const user = userCredential.user;
 				dispatch(setUid(user.uid));
+				localStorage.setItem('user', JSON.stringify(user));
 			})
 			.catch((error) => {
 				dispatch(setErrorMessage(error.message));
@@ -88,6 +89,7 @@ const SignIn = () => {
 						onChange={(event) => {
 							dispatch(setEmail(event.target.value));
 						}}
+						id="email-input"
 						fullWidth
 						label="Email"
 						role="email-input"
@@ -121,7 +123,7 @@ const SignIn = () => {
 									</IconButton>
 								</InputAdornment>
 							}
-							id="outlined-adornment-password"
+							id="password-input"
 							labelWidth={70}
 							onChange={(event) => {
 								setPassword(event.target.value);
@@ -134,6 +136,7 @@ const SignIn = () => {
 					<Button
 						className={classes.button}
 						color="primary"
+						id="sign-in"
 						fullWidth
 						onClick={handleSignIn}
 						role="sign-in"

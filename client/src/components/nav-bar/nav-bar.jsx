@@ -3,7 +3,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setUid, selectUid } from "../../slices/authenticate-slice";
 import { setIsDrawerOpen } from "../../slices/nav-drawer-slice";
-import { setReminders } from "../../slices/reminders-slice";
+import { reset } from "../../slices/reminders-slice";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import firebase from "../../firebase/firebase";
@@ -37,8 +37,9 @@ const NavBar = () => {
 	const uid = useSelector(selectUid);
 
 	const handleSignOut = () => {
+		localStorage.clear();
 		dispatch(setUid(undefined));
-		dispatch(setReminders([]));
+		dispatch(reset());
 		firebase
 			.auth()
 			.signOut()
@@ -72,7 +73,7 @@ const NavBar = () => {
 						Remind
 					</Typography>
 					{uid ? (
-						<Button className={classes.button} color="inherit" onClick={handleSignOut} role="sign-out">
+						<Button className={classes.button} color="inherit" id="sign-out" onClick={handleSignOut}>
 							Sign Out
 						</Button>
 					) : null}

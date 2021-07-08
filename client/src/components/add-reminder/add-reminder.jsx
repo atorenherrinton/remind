@@ -3,8 +3,9 @@
 import React, { useState } from "react";
 import { addReminder } from "../../firebase/firebase-actions";
 import Button from "@material-ui/core/Button";
-import { selectUid } from "../../slices/authenticate-slice";
 import { makeStyles } from "@material-ui/core/styles";
+import { selectUid } from "../../slices/authenticate-slice";
+import { selectWhichReminders } from "../../slices/reminders-slice";
 import TextField from "@material-ui/core/TextField";
 import { useSelector } from "react-redux";
 
@@ -19,11 +20,12 @@ const AddReminder = () => {
 	const [textField, setTextField] = useState("");
 	const [toggleInput, setToggleInput] = useState(false);
 	const uid = useSelector(selectUid);
+	const whichReminders = useSelector(selectWhichReminders);
 
 	const handleAddReminder = (event) => {
 		if (event.key === "Enter" && textField.length > 0) {
 			// Add to firestore
-			addReminder(textField, uid);
+			addReminder(textField, uid, whichReminders);
 			setTextField("");
 			setToggleInput(false);
 		}
@@ -38,7 +40,7 @@ const AddReminder = () => {
 					className={classes.textField}
 					color="secondary"
 					fullWidth
-					id="outlined-basic"
+					id="add-reminder-input"
 					onChange={(event) => {
 						setTextField(event.target.value);
 					}}
@@ -50,6 +52,7 @@ const AddReminder = () => {
 			) : (
 				<Button
 					color="secondary"
+					id="add-reminder-button"
 					fullWidth
 					onClick={() => {
 						setToggleInput(true);

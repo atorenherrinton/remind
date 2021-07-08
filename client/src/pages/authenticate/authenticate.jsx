@@ -1,17 +1,17 @@
 /** @format */
 
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { selectIsNewUser } from '../../slices/authenticate-slice';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
-import NavBar from '../../components/nav-bar/nav-bar';
-import SignIn from '../../components/sign-in/sign-in';
-import SignUp from '../../components/sign-up/sign-up';
+import React from "react";
+import { useSelector } from "react-redux";
+import { selectIsNewUser } from "../../slices/authenticate-slice";
+import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
+import NavBar from "../../components/nav-bar/nav-bar";
+import SignIn from "../../components/sign-in/sign-in";
+import SignUp from "../../components/sign-up/sign-up";
 
 const useStyles = makeStyles((theme) => ({
 	grid: {
-		marginTop: '6rem',
+		marginTop: "6rem",
 	},
 }));
 
@@ -20,7 +20,7 @@ const Authenticate = () => {
 	const isNewUser = useSelector(selectIsNewUser);
 
 	return (
-		<div title="authenticate">
+		<div id="authenticate">
 			<NavBar />
 			<Grid alignItems="center" className={classes.grid} container justify="center" role="grid-container">
 				<Grid item role="grid-item" xs={3}>

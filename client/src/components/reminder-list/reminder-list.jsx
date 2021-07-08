@@ -1,7 +1,12 @@
 /** @format */
 import React from "react";
 import { useSelector } from "react-redux";
-import { selectReminders, setReminders } from "../../slices/reminders-slice";
+import {
+	selectCompleted,
+	selectScheduled,
+	selectTodos,
+	selectWhichReminders,
+} from "../../slices/reminders-slice";
 import { makeStyles } from "@material-ui/core/styles";
 import AddReminder from "../add-reminder/add-reminder";
 import Divider from "@material-ui/core/Divider";
@@ -28,17 +33,28 @@ const useStyles = makeStyles((theme) => ({
 
 const ReminderList = () => {
 	const classes = useStyles();
-	const reminders = useSelector(selectReminders);
+	const completed = useSelector(selectCompleted);
+	let reminders;
+	const scheduled = useSelector(selectScheduled);
+	const todos = useSelector(selectTodos);
+	const whichReminders = useSelector(selectWhichReminders);
+
+	if (whichReminders === "Todos") {
+		reminders = todos;
+	} else if (whichReminders === "Scheduled") {
+		reminders = scheduled;
+	} else if (whichReminders === "Completed") {
+		reminders = completed;
+	}
 
 	return (
 		<div title="reminder-list">
 			<List className={classes.list} role="list">
 				<ListItem>
 					<Typography className={classes.heading} role="heading" variant="h5">
-						Todos
+						{whichReminders}
 					</Typography>
 				</ListItem>
-
 				{reminders.length > 0 ? <Divider className={classes.divider} role="divider" variant="middle" /> : null}
 				{reminders.map((reminder) => (
 					<ReminderItem

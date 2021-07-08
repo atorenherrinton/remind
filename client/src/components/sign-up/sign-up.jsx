@@ -67,6 +67,7 @@ const SignUp = () => {
 				// Signed in
 				const user = userCredential.user;
 				dispatch(setUid(user.uid));
+				localStorage.setItem('user', JSON.stringify(user));
 			})
 			.catch((error) => {
 				dispatch(setErrorMessage(error.message));
@@ -147,6 +148,7 @@ const SignUp = () => {
 					<Button
 						className={classes.button}
 						color="primary"
+						id="sign-in-instead"
 						fullWidth
 						onClick={() => {
 							dispatch(setIsNewUser());

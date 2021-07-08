@@ -21,7 +21,7 @@ const TimePicker = () => {
 
 	const handleChange = (date) => {
 		if (date) {
-			dispatch(addDate(date.toString()));
+			dispatch(addDate(date.toJSON()));
 		}
 	};
 	return (

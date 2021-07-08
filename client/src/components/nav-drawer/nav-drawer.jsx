@@ -1,13 +1,19 @@
 /** @format */
 
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectIsDrawerOpen } from "../../slices/nav-drawer-slice";
+import { setWhichReminders } from "../../slices/reminders-slice";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
-import NavDrawerListItem from "../nav-drawer-list-item/nav-drawer-list-item";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import Inbox from "@material-ui/icons/Inbox";
+import Schedule from "@material-ui/icons/Schedule";
+import DoneAll from "@material-ui/icons/DoneAll";
 
 const drawerWidth = 240;
 
@@ -32,14 +38,10 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const NavDrawer = (props) => {
+const NavDrawer = () => {
 	const classes = useStyles();
+	const dispatch = useDispatch();
 	const isDrawerOpen = useSelector(selectIsDrawerOpen);
-	const listItems = props.listItems || [
-		{ itemText: "Todos", icon: "Inbox" },
-		{ itemText: "Scheduled", icon: "Schedule" },
-		{ itemText: "Completed", icon: "DoneAll" },
-	];
 
 	return (
 		<div className={classes.root} title="navigation-drawer">
@@ -54,11 +56,44 @@ const NavDrawer = (props) => {
 				variant="persistent"
 			>
 				<Toolbar role="toolbar" />
-				<div className={classes.drawerContainer} role="drawer-container">
+				<div className={classes.drawerContainer} title="drawer-container">
 					<List role="list">
-						{listItems.map((listItem, i) => (
-							<NavDrawerListItem icon={listItem.icon} key={i} listItemText={listItem.itemText} />
-						))}
+						<ListItem
+							button
+							id="todos-link"
+							onClick={() => {
+								dispatch(setWhichReminders("Todos"));
+							}}
+						>
+							<ListItemIcon>
+								<Inbox />
+							</ListItemIcon>
+							<ListItemText primary="Todos" />
+						</ListItem>
+						<ListItem
+							button
+							id="scheduled-link"
+							onClick={() => {
+								dispatch(setWhichReminders("Scheduled"));
+							}}
+						>
+							<ListItemIcon>
+								<Schedule />
+							</ListItemIcon>
+							<ListItemText primary="Scheduled" />
+						</ListItem>
+						<ListItem
+							button
+							id="completed-link"
+							onClick={() => {
+								dispatch(setWhichReminders("Completed"));
+							}}
+						>
+							<ListItemIcon>
+								<DoneAll />
+							</ListItemIcon>
+							<ListItemText primary="Completed" />
+						</ListItem>
 					</List>
 				</div>
 			</Drawer>

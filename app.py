@@ -1,8 +1,10 @@
+from datetime import datetime
 from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+import json
 
 app = Flask(__name__, static_folder='client/build', static_url_path='')
 app.debug = True
@@ -14,12 +16,26 @@ db = firestore.client()
 
 
 def add_reminder():
-    title, uid = request.json['title'], request.json['uid']
-    db.collection(u'users').document(uid).collection(u'reminders').add({
-        u'isCompleted': False,
-        u'timestamp': firestore.SERVER_TIMESTAMP,
-        u'title': title,
-    })
+    title, uid, which_reminders = request.json['title'], request.json['uid'], request.json['which_reminders']
+    if which_reminders == 'Todos':
+        db.collection(u'users').document(uid).collection(u'reminders').add({
+            u'isCompleted': False,
+            u'timestamp': firestore.SERVER_TIMESTAMP,
+            u'title': title,
+        })
+    elif which_reminders == 'Scheduled':
+        db.collection(u'users').document(uid).collection(u'reminders').add({
+            u'date': datetime.now().isoformat(),
+            u'isCompleted': False,
+            u'timestamp': firestore.SERVER_TIMESTAMP,
+            u'title': title,
+        })
+    elif which_reminders == 'Completed':
+        db.collection(u'users').document(uid).collection(u'reminders').add({
+            u'isCompleted': True,
+            u'timestamp': firestore.SERVER_TIMESTAMP,
+            u'title': title,
+        })
     return 'successfully added reminder to firestore'
 
 
@@ -59,6 +75,33 @@ def delete_reminder():
     return 'successfully deleted reminder in firestore'
 
 
+def load_reminders():
+    uid, which_reminders = request.json['uid'], request.json['which_reminders']
+    reminders = []
+    if which_reminders == "Todos":
+        docs = db.collection(u'users').document(uid).collection(u'reminders').where(
+            u'isCompleted', u'==', False).order_by("timestamp").stream()
+        for doc in docs:
+            reminder = doc.to_dict()
+            reminder['id'] = doc.id
+            reminders.append(reminder)
+    elif which_reminders == "Scheduled":
+        docs = db.collection(u'users').document(uid).collection(u'reminders').where(
+            u'date', u'!=', False).order_by("date").stream()
+        for doc in docs:
+            reminder = doc.to_dict()
+            reminder['id'] = doc.id
+            reminders.append(reminder)
+    elif which_reminders == "Completed":
+        docs = db.collection(u'users').document(uid).collection(u'reminders').where(
+            u'isCompleted', u'==', True).order_by("timestamp").stream()
+        for doc in docs:
+            reminder = doc.to_dict()
+            reminder['id'] = doc.id
+            reminders.append(reminder)
+    return reminders
+
+
 def set_reminder_completed():
     id, isCompleted, uid = request.json['id'], request.json['isCompleted'], request.json['uid']
     db.collection(u'users').document(uid).collection(
@@ -72,6 +115,7 @@ firebase_actions = {
     "add_reminder": add_reminder,
     "change_reminder": change_reminder,
     "delete_reminder": delete_reminder,
+    "load_reminders": load_reminders,
     "set_reminder_completed": set_reminder_completed,
 }
 

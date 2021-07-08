@@ -1,10 +1,16 @@
 /** @format */
 import React, { useEffect } from "react";
 import firebase from "../../firebase/firebase";
+import Grid from "@material-ui/core/Grid";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUid } from "../../slices/authenticate-slice";
-import { selectToggleMoreOptions, selectWhichReminders, setReminders } from "../../slices/reminders-slice";
-import Grid from "@material-ui/core/Grid";
+import {
+	selectToggleMoreOptions,
+	selectWhichReminders,
+	setCompleted,
+	setScheduled,
+	setTodos,
+} from "../../slices/reminders-slice";
 import { makeStyles } from "@material-ui/core/styles";
 import NavBar from "../../components/nav-bar/nav-bar";
 import NavDrawer from "../../components/nav-drawer/nav-drawer";
@@ -28,7 +34,7 @@ const Main = () => {
 
 	useEffect(() => {
 		const loadReminders = () => {
-			if (whichReminders === "todos") {
+			if (whichReminders === "Todos") {
 				db.collection("users")
 					.doc(uid)
 					.collection("reminders")
@@ -39,28 +45,29 @@ const Main = () => {
 						querySnapshot.forEach((doc) => {
 							const reminder = doc.data();
 							reminder["id"] = doc.id;
-							reminder["timestamp"] = doc.data().timestamp.toString();
+							reminder["timestamp"] = doc.data().timestamp.toJSON();
 							reminders.push(reminder);
 						});
-						dispatch(setReminders(reminders));
+						dispatch(setTodos(reminders));
 					});
-			} else if (whichReminders === "scheduled") {
+			} else if (whichReminders === "Scheduled") {
 				db.collection("users")
 					.doc(uid)
 					.collection("reminders")
 					.where("date", "!=", false)
+					.where("isCompleted", "==", false)
 					.orderBy("date")
 					.onSnapshot((querySnapshot) => {
 						const reminders = [];
 						querySnapshot.forEach((doc) => {
 							const reminder = doc.data();
 							reminder["id"] = doc.id;
-							reminder["timestamp"] = doc.data().timestamp.toString();
+							reminder["timestamp"] = doc.data().timestamp.toJSON();
 							reminders.push(reminder);
 						});
-						dispatch(setReminders(reminders));
+						dispatch(setScheduled(reminders));
 					});
-			} else if (whichReminders === "completed") {
+			} else if (whichReminders === "Completed") {
 				db.collection("users")
 					.doc(uid)
 					.collection("reminders")
@@ -71,17 +78,18 @@ const Main = () => {
 						querySnapshot.forEach((doc) => {
 							const reminder = doc.data();
 							reminder["id"] = doc.id;
-							reminder["timestamp"] = doc.data().timestamp.toString();
+							reminder["timestamp"] = doc.data().timestamp.toJSON();
 							reminders.push(reminder);
 						});
-						dispatch(setReminders(reminders));
+						dispatch(setCompleted(reminders));
 					});
 			}
 		};
 		loadReminders();
 	});
+
 	return (
-		<div title="main">
+		<div id="main">
 			<NavBar />
 			<Grid alignItems="flex-start" container direction="row" justify="flex-start" role="container">
 				<Grid item role="item" xs={3}>
