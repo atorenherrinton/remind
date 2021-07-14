@@ -2,7 +2,7 @@
 import 'date-fns';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addDate, selectDate } from '../../slices/reminders-slice';
+import { addDate, selectDate } from '../../slices/reminders.slice';
 import DateFnsUtils from '@date-io/date-fns';
 import { makeStyles } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';

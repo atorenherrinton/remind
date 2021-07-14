@@ -9,7 +9,7 @@ import {
 	setErrorMessage,
 	setIsNewUser,
 	setUid,
-} from "../../slices/authenticate-slice";
+} from "../../slices/authenticate.slice";
 import Avatar from "@material-ui/core/Avatar";
 import { blue } from "@material-ui/core/colors";
 import Button from "@material-ui/core/Button";

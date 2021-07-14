@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useSelector } from "react-redux";
-import { selectIsNewUser } from "../../slices/authenticate-slice";
+import { selectIsNewUser } from "../../slices/authenticate.slice";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import NavBar from "../../components/nav-bar/nav-bar";

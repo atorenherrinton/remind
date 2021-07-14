@@ -2,8 +2,8 @@
 
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectIsDrawerOpen } from "../../slices/nav-drawer-slice";
-import { setWhichReminders } from "../../slices/reminders-slice";
+import { selectIsDrawerOpen } from "../../slices/nav-drawer.slice";
+import { setWhichReminders } from "../../slices/reminders.slice";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import Toolbar from "@material-ui/core/Toolbar";

@@ -1,9 +1,9 @@
 /** @format */
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setUid, selectUid } from "../../slices/authenticate-slice";
-import { setIsDrawerOpen } from "../../slices/nav-drawer-slice";
-import { reset } from "../../slices/reminders-slice";
+import { setUid, selectUid } from "../../slices/authenticate.slice";
+import { setIsDrawerOpen } from "../../slices/nav-drawer.slice";
+import { reset } from "../../slices/reminders.slice";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import firebase from "../../firebase/firebase";
@@ -73,7 +73,7 @@ const NavBar = () => {
 						Remind
 					</Typography>
 					{uid ? (
-						<Button className={classes.button} color="inherit" id="sign-out" onClick={handleSignOut}>
+						<Button className={classes.button} color="inherit" id="sign-out" onClick={handleSignOut} variant="outlined">
 							Sign Out
 						</Button>
 					) : null}

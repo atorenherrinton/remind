@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectErrorMessage, setErrorMessage } from "../../slices/authenticate-slice";
+import { selectErrorMessage, setErrorMessage } from "../../slices/authenticate.slice";
 import { makeStyles } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert";
 

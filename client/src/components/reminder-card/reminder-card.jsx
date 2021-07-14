@@ -6,7 +6,11 @@ import {
   deleteReminder,
 } from "../../firebase/firebase-actions";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUid } from "../../slices/authenticate-slice";
+import { selectUid } from "../../slices/authenticate.slice";
+import {
+  selectIsButtonDisabled,
+  setIsButtonDisabled,
+} from "../../slices/reminder-card.slice";
 import {
   addDate,
   addTime,
@@ -17,8 +21,8 @@ import {
   selectReminder,
   selectTime,
   setToggleMoreOptions,
-} from "../../slices/reminders-slice";
-import AssignReminderForm from "../assign-reminder-form/assign-reminder-form";
+} from "../../slices/reminders.slice";
+import AssignReminder from "../assign-reminder/assign-reminder";
 import Button from "@material-ui/core/Button";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Card from "@material-ui/core/Card";
@@ -60,6 +64,7 @@ const useStyles = makeStyles((theme) => ({
   },
   divider: {},
   done: {
+    textTransform: "capitalize",
     marginTop: "0.5rem",
   },
   header: {
@@ -73,7 +78,7 @@ const ReminderCard = (props) => {
   const dispatch = useDispatch();
   const date = useSelector(selectDate) || props.date;
   const time = useSelector(selectTime) || props.time;
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const isButtonDisabled = useSelector(selectIsButtonDisabled);
   const [isLoaded, setIsLoaded] = useState(false);
   const reminder = useSelector(selectReminder) || props.reminder;
   const title = reminder.title;
@@ -158,12 +163,12 @@ const ReminderCard = (props) => {
                   onChange={(event) => {
                     dispatch(changeTitle(event.target.value));
                     if (event.target.value.length < 1) {
-                      setIsButtonDisabled(true);
+                      dispatch(setIsButtonDisabled(true));
                     } else if (
                       event.target.value.length > 0 &&
                       isButtonDisabled
                     ) {
-                      setIsButtonDisabled(false);
+                      dispatch(setIsButtonDisabled(false));
                     }
                   }}
                   onKeyPress={(event) => {
@@ -267,9 +272,10 @@ const ReminderCard = (props) => {
                 <TimePicker id={reminder.id} />
               </ListItem>
             ) : null}
-            <ListItem>
-              <AssignReminderForm />
-            </ListItem>
+            <AssignReminder
+              email={reminder.email}
+              phoneNumber={reminder.phoneNumber}
+            />
           </List>
         </CardContent>
         <CardActions className={classes.actions}>
@@ -277,9 +283,9 @@ const ReminderCard = (props) => {
             className={classes.done}
             color="primary"
             disabled={isButtonDisabled}
+            id="done"
             fullWidth
             onClick={handleChangeReminder}
-            role="done"
             variant="outlined"
           >
             Done

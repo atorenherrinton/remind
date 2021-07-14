@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useDispatch } from "react-redux";
-import { setUid } from "../../slices/authenticate-slice";
+import { setUid } from "../../slices/authenticate.slice";
 import Button from "@material-ui/core/Button";
 import firebase from "../../firebase/firebase";
 import { makeStyles } from "@material-ui/core/styles";
