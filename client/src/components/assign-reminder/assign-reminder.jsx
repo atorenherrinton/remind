@@ -22,7 +22,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import { makeStyles } from "@material-ui/core/styles";
 import MaskedInput from "react-text-mask";
 import MenuItem from "@material-ui/core/MenuItem";
-import Person from "@material-ui/icons/Person";
+import Person from "@material-ui/icons/PersonOutline";
 import Phone from "@material-ui/icons/PhoneOutlined";
 import PropTypes from "prop-types";
 import TextField from "@material-ui/core/TextField";

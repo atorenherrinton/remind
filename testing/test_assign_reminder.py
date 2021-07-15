@@ -171,6 +171,25 @@ class TestAssignReminder:
             By.ID, 'assign-reminder-list-item').text
         assert actual_text == input_text, f'Error. Expected the reminder to be assigned: "{actual_text}" was found'
 
+    def test_reminder_has_a_person_icon_if_reminder_is_assigned(self):
+        self.driver.find_element(
+            By.ID, 'assign-reminder-list-item').click()
+        input_text = 'test@test.com'
+        self.driver.find_element(
+            By.ID, 'assign-textfield').send_keys(input_text)
+        self.driver.find_element(
+            By.ID, 'assign-textfield').send_keys(Keys.RETURN)
+        self.driver.find_element(
+            By.ID, 'done').click()
+        time.sleep(1)
+        expected_id = 'person-icon'
+        person_icon = self.driver.find_element(
+            By.ID, expected_id)
+        assert person_icon.is_displayed(
+        ), f'Error. Expected a person icon to render: "{expected_id}" was not found'
+        self.driver.find_element(
+            By.ID, 'reminder-item').click()
+
     def teardown_method(self):
         self.driver.find_element(By.ID, 'toggle-more-options').click()
         self.driver.find_element(By.ID, 'delete-reminder').click()

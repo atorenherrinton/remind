@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { setReminderCompleted } from "../../firebase/firebase-actions";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUid } from "../../slices/authenticate.slice";
@@ -12,6 +12,20 @@ import Checkbox from "@material-ui/core/Checkbox";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+
+const useStyles = makeStyles((theme) => ({
+  root: {},
+  body: {
+    display: "block",
+    lineHeight: 1.5,
+  },
+  overline: {
+    display: "block",
+    lineHeight: 1.5,
+  },
+}));
 
 const ReminderItem = ({
   id,
@@ -108,7 +122,7 @@ const ReminderItem = ({
     }
     return date;
   };
-
+  const classes = useStyles();
   const dispatch = useDispatch();
   const displayDate = createDisplayDate(date);
   const [isChecked, setIsChecked] = useState(isCompleted);
@@ -142,7 +156,26 @@ const ReminderItem = ({
       >
         <ListItemText
           primary={title}
-          secondary={displayDate}
+          secondary={
+            <Fragment>
+              <Typography
+                className={classes.overline}
+                component="span"
+                variant="overline"
+                color="textSecondary"
+              >
+                {displayDate}
+              </Typography>
+              <Typography
+                className={classes.body}
+                component="span"
+                variant="caption"
+                color="textSecondary"
+              >
+                {email || phoneNumber}
+              </Typography>
+            </Fragment>
+          }
           role="item-text"
         />
         <ListItemSecondaryAction role="secondary-action">

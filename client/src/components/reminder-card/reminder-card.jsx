@@ -70,6 +70,9 @@ const useStyles = makeStyles((theme) => ({
   header: {
     padding: "1.5rem 1.5rem 0.75rem 1.5rem",
   },
+  title: {
+    cursor: "pointer",
+  },
 }));
 
 const ReminderCard = (props) => {
@@ -159,6 +162,7 @@ const ReminderCard = (props) => {
                 }}
               >
                 <TextField
+                  color="secondary"
                   fullWidth
                   onChange={(event) => {
                     dispatch(changeTitle(event.target.value));
@@ -186,6 +190,7 @@ const ReminderCard = (props) => {
               </ClickAwayListener>
             ) : (
               <Typography
+                className={classes.title}
                 onClick={() => {
                   setToggleInput(true);
                 }}
