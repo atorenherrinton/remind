@@ -39,33 +39,82 @@ def add_reminder():
     return 'successfully added reminder to firestore'
 
 
+def add_date(uid, id, date):
+    db.collection(u'users').document(uid).collection(
+        u'reminders').document(id).update({
+            u'date': date,
+            u'time': firestore.DELETE_FIELD,
+        })
+
+
+def add_date_and_time(uid, id, date, time):
+    db.collection(u'users').document(uid).collection(
+        u'reminders').document(id).update({
+            u'date': date,
+            u'time': time,
+        })
+
+
+def remove_date_and_time(uid, id):
+    db.collection(u'users').document(uid).collection(
+        u'reminders').document(id).update({
+            u'date': firestore.DELETE_FIELD,
+            u'time': firestore.DELETE_FIELD,
+        })
+
+
+def add_assignment_email(uid, id, email):
+    db.collection(u'users').document(uid).collection(
+        u'reminders').document(id).update({
+            u'email': email,
+            u'phoneNumber': firestore.DELETE_FIELD,
+
+        })
+
+
+def add_assignment_phone_number(uid, id, phone_number):
+    db.collection(u'users').document(uid).collection(
+        u'reminders').document(id).update({
+            u'email': firestore.DELETE_FIELD,
+            u'phoneNumber': phone_number,
+        })
+
+
+def remove_assignment(uid, id):
+    db.collection(u'users').document(uid).collection(
+        u'reminders').document(id).update({
+            u'email': firestore.DELETE_FIELD,
+            u'phoneNumber': firestore.DELETE_FIELD,
+        })
+
+
+def change_title(uid, id, title):
+    db.collection(u'users').document(uid).collection(u'reminders').document(id).update({
+        u'title': title, })
+
+
 def change_reminder():
     title, id, uid = request.json['title'], request.json['id'], request.json['uid']
     date = request.json.get('date')
     time = request.json.get('time')
+    email = request.json.get('email')
+    phone_number = request.json.get('phone_number')
+    print(email, phone_number)
 
+    change_title(uid, id, title)
     if date and time:
-        db.collection(u'users').document(uid).collection(
-            u'reminders').document(id).update({
-                u'title': title,
-                u'date': date,
-                u'time': time,
-            })
+        add_date_and_time(uid, id, date, time)
     elif date:
-        db.collection(u'users').document(uid).collection(
-            u'reminders').document(id).update({
-                u'title': title,
-                u'date': date,
-                u'time': firestore.DELETE_FIELD,
-            })
+        add_date(uid, id, date)
     else:
-        db.collection(u'users').document(uid).collection(
-            u'reminders').document(id).update({
-                u'title': title,
-                u'date': firestore.DELETE_FIELD,
-                u'time': firestore.DELETE_FIELD,
-            })
-    return 'successfully changed reminder to firestore'
+        remove_date_and_time(uid, id)
+    if email:
+        add_assignment_email(uid, id, email)
+    elif phone_number:
+        add_assignment_phone_number(uid, id, phone_number)
+    else:
+        remove_assignment(uid, id)
+    return 'successfully changed reminder in firestore'
 
 
 def delete_reminder():

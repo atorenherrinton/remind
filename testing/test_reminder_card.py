@@ -31,27 +31,6 @@ class TestReminderCard:
         assert reminder_card.is_displayed(
         ), f'Error. Expected a reminder card to render: "{expected_id}" was not found'
 
-    def test_reminder_card_has_an_assign_reminder_form(self):
-        expected_id = 'assign-reminder-field'
-        assign_reminder_form = self.driver.find_element(
-            By.ID, expected_id)
-        assert assign_reminder_form.is_enabled(
-        ), f'Error. Expected an assign reminder form to render: "{expected_id}" was not found'
-
-    def test_assign_reminder_form_contains_a_textfield(self):
-        expected_id = 'assign-textfield'
-        textfield = self.driver.find_element(
-            By.ID, expected_id)
-        assert textfield.is_displayed(
-        ), f'Error. Expected a textfield to render: "{expected_id}" was not found'
-
-    def test_assign_reminder_form_contains_a_button(self):
-        expected_id = 'assign-button'
-        button = self.driver.find_element(
-            By.ID, expected_id)
-        assert button.is_displayed(
-        ), f'Error. Expected a textfield to render: "{expected_id}" was not found'
-
     def teardown_method(self):
         self.driver.find_element(By.ID, 'toggle-more-options').click()
         self.driver.find_element(By.ID, 'delete-reminder').click()
