@@ -17,13 +17,12 @@ import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
-  body: {
+  assignment: {
     display: "block",
-    lineHeight: 1.5,
+    lineHeight: "1.3",
   },
-  overline: {
+  date: {
     display: "block",
-    lineHeight: 1.5,
   },
 }));
 
@@ -31,6 +30,7 @@ const ReminderItem = ({
   id,
   date,
   email,
+  isAssigned,
   isCompleted,
   phoneNumber,
   time,
@@ -142,7 +142,9 @@ const ReminderItem = ({
           dispatch(
             setReminder({
               id,
+              isAssigned,
               date,
+              displayDate,
               email,
               phoneNumber,
               time,
@@ -155,22 +157,27 @@ const ReminderItem = ({
         role="open-reminder-card"
       >
         <ListItemText
-          primary={title}
-          secondary={
+          primary={
             <Fragment>
               <Typography
-                className={classes.overline}
+                className={classes.date}
                 component="span"
-                variant="overline"
+                variant="caption"
                 color="textSecondary"
               >
                 {displayDate}
               </Typography>
+
+              {title}
+            </Fragment>
+          }
+          secondary={
+            <Fragment>
               <Typography
-                className={classes.body}
+                className={classes.assignment}
                 component="span"
                 variant="caption"
-                color="textSecondary"
+                color="secondary"
               >
                 {email || phoneNumber}
               </Typography>

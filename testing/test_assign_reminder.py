@@ -164,6 +164,8 @@ class TestAssignReminder:
             By.ID, 'assign-textfield').send_keys(Keys.RETURN)
         self.driver.find_element(
             By.ID, 'done').click()
+        self.driver.find_element(
+            By.ID, 'send-assignment').click()
         time.sleep(1)
         self.driver.find_element(
             By.ID, 'reminder-item').click()
@@ -171,7 +173,7 @@ class TestAssignReminder:
             By.ID, 'assign-reminder-list-item').text
         assert actual_text == input_text, f'Error. Expected the reminder to be assigned: "{actual_text}" was found'
 
-    def test_reminder_has_a_person_icon_if_reminder_is_assigned(self):
+    def test_reminder_item_shows_email_or_phone_number_if_assigned(self):
         self.driver.find_element(
             By.ID, 'assign-reminder-list-item').click()
         input_text = 'test@test.com'
@@ -181,12 +183,47 @@ class TestAssignReminder:
             By.ID, 'assign-textfield').send_keys(Keys.RETURN)
         self.driver.find_element(
             By.ID, 'done').click()
+        self.driver.find_element(
+            By.ID, 'send-assignment').click()
         time.sleep(1)
-        expected_id = 'person-icon'
-        person_icon = self.driver.find_element(
-            By.ID, expected_id)
-        assert person_icon.is_displayed(
-        ), f'Error. Expected a person icon to render: "{expected_id}" was not found'
+        expected_text = 'test@test.com'
+        actual_text = self.driver.find_element(
+            By.ID, 'reminder-item').text
+        assert expected_text in actual_text, f'Error. Expected the assignment phone number or email to be present: "{actual_text}" was found'
+        self.driver.find_element(
+            By.ID, 'reminder-item').click()
+
+    def test_assign_reminder_dialog_pops_up_if_reminder_is_assigned(self):
+        self.driver.find_element(
+            By.ID, 'assign-reminder-list-item').click()
+        self.driver.find_element(
+            By.ID, 'assign-textfield').send_keys('test@test.com')
+        self.driver.find_element(
+            By.ID, 'assign-textfield').send_keys(Keys.RETURN)
+        self.driver.find_element(
+            By.ID, 'done').click()
+        dialog = self.driver.find_element(
+            By.ID, 'assign-reminder-dialog')
+        assert dialog.is_displayed(
+        ), f'Error. Expected the assign reminder dialog to pop up; it was not found.'
+        self.driver.find_element(
+            By.ID, 'cancel-send-assignment').click()
+
+    def test_reminder_card_closes_if_send_is_clicked_in_assign_reminder_dialog(self):
+        self.driver.find_element(
+            By.ID, 'assign-reminder-list-item').click()
+        self.driver.find_element(
+            By.ID, 'assign-textfield').send_keys('test@test.com')
+        self.driver.find_element(
+            By.ID, 'assign-textfield').send_keys(Keys.RETURN)
+        self.driver.find_element(
+            By.ID, 'done').click()
+        self.driver.find_element(
+            By.ID, 'send-assignment').click()
+        reminder_list = self.driver.find_element(
+            By.ID, 'reminder-list')
+        assert reminder_list.is_displayed(
+        ), f'Error. Expected the reminder card to close and the reminder list to render instead; it was not found.'
         self.driver.find_element(
             By.ID, 'reminder-item').click()
 

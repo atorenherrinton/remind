@@ -25,6 +25,7 @@ export const addReminder = (title, uid, whichReminders) => {
 };
 
 export const changeReminder = (reminder, uid) => {
+  console.log(reminder);
   const data = {
     action: "change_reminder",
     id: reminder.id,

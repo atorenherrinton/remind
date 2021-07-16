@@ -41,7 +41,7 @@ const AddReminder = () => {
           autoComplete="off"
           autoFocus
           className={classes.textField}
-          color="secondary"
+          color="primary"
           fullWidth
           id="add-reminder-input"
           onChange={(event) => {
@@ -55,7 +55,7 @@ const AddReminder = () => {
       ) : (
         <Button
           className={classes.button}
-          color="secondary"
+          color="primary"
           id="add-reminder-button"
           fullWidth
           onClick={() => {

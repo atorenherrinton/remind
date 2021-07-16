@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectUid } from "../../slices/authenticate.slice";
 import {
   selectIsButtonDisabled,
+  setIsAssignReminderDialogOpen,
   setIsButtonDisabled,
 } from "../../slices/reminder-card.slice";
 import {
@@ -23,6 +24,7 @@ import {
   setToggleMoreOptions,
 } from "../../slices/reminders.slice";
 import AssignReminder from "../assign-reminder/assign-reminder";
+import AssignReminderDialog from "../assign-reminder-dialog/assign-reminder-dialog";
 import Button from "@material-ui/core/Button";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Card from "@material-ui/core/Card";
@@ -96,9 +98,16 @@ const ReminderCard = (props) => {
     dispatch(setToggleMoreOptions());
   };
 
-  const handleChangeReminder = () => {
-    changeReminder(reminder, uid);
-    dispatch(setToggleMoreOptions());
+  const handleSaveReminder = () => {
+    if (
+      (reminder.email && !reminder.isAssigned) ||
+      (reminder.phoneNumber && !reminder.isAssigned)
+    ) {
+      dispatch(setIsAssignReminderDialogOpen());
+    } else {
+      changeReminder(reminder, uid);
+      dispatch(setToggleMoreOptions());
+    }
   };
 
   useEffect(() => {
@@ -290,11 +299,16 @@ const ReminderCard = (props) => {
             disabled={isButtonDisabled}
             id="done"
             fullWidth
-            onClick={handleChangeReminder}
+            onClick={handleSaveReminder}
             variant="outlined"
           >
             Done
           </Button>
+          <AssignReminderDialog
+            date={reminder.date}
+            email={reminder.email}
+            phoneNumber={reminder.phoneNumber}
+          />
         </CardActions>
       </Card>
     </div>

@@ -48,7 +48,7 @@ const ReminderList = () => {
   }
 
   return (
-    <div title="reminder-list">
+    <div id="reminder-list">
       <List className={classes.list} role="list">
         <ListItem>
           <Typography className={classes.heading} role="heading" variant="h5">
@@ -68,6 +68,7 @@ const ReminderList = () => {
             id={reminder.id}
             date={reminder.date}
             email={reminder.email}
+            isAssigned={reminder.isAssigned}
             isCompleted={reminder.isCompleted}
             phoneNumber={reminder.phoneNumber}
             time={reminder.time}

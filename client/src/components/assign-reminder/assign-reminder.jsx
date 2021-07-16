@@ -125,6 +125,7 @@ const AssignReminderForm = (props) => {
       if (validatePhoneNumber()) {
         setInputError(true);
       } else {
+        setEmail("");
         dispatch(addPhoneNumber(phoneNumber));
         setIsReminderAssigned(true);
         resetButton();

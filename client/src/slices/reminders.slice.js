@@ -23,15 +23,18 @@ export const remindersSlice = createSlice({
     addDate: (state, action) => {
       state.reminder.date = action.payload;
     },
+
     addTime: (state) => {
       state.reminder.time = true;
     },
+
     changeTitle: (state, action) => {
       state.reminder.title = action.payload;
     },
     removeAssignment: (state) => {
       state.reminder.email = null;
       state.reminder.phoneNumber = null;
+      state.reminder.isAssigned = false;
     },
     removeDate: (state) => {
       state.reminder.date = null;
@@ -50,6 +53,7 @@ export const remindersSlice = createSlice({
     setReminder: (state, action) => {
       state.reminder = action.payload;
     },
+
     setTodos: (state, action) => {
       state.todos = action.payload;
     },

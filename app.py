@@ -19,6 +19,7 @@ def add_reminder():
     title, uid, which_reminders = request.json['title'], request.json['uid'], request.json['which_reminders']
     if which_reminders == 'Todos':
         db.collection(u'users').document(uid).collection(u'reminders').add({
+            u'isAssigned': False,
             u'isCompleted': False,
             u'timestamp': firestore.SERVER_TIMESTAMP,
             u'title': title,
@@ -26,12 +27,14 @@ def add_reminder():
     elif which_reminders == 'Scheduled':
         db.collection(u'users').document(uid).collection(u'reminders').add({
             u'date': datetime.now().isoformat(),
+            u'isAssigned': False,
             u'isCompleted': False,
             u'timestamp': firestore.SERVER_TIMESTAMP,
             u'title': title,
         })
     elif which_reminders == 'Completed':
         db.collection(u'users').document(uid).collection(u'reminders').add({
+            u'isAssigned': False,
             u'isCompleted': True,
             u'timestamp': firestore.SERVER_TIMESTAMP,
             u'title': title,
@@ -68,7 +71,7 @@ def add_assignment_email(uid, id, email):
         u'reminders').document(id).update({
             u'email': email,
             u'phoneNumber': firestore.DELETE_FIELD,
-
+            u'isAssigned': True,
         })
 
 
@@ -77,6 +80,7 @@ def add_assignment_phone_number(uid, id, phone_number):
         u'reminders').document(id).update({
             u'email': firestore.DELETE_FIELD,
             u'phoneNumber': phone_number,
+            u'isAssigned': True,
         })
 
 
@@ -85,6 +89,7 @@ def remove_assignment(uid, id):
         u'reminders').document(id).update({
             u'email': firestore.DELETE_FIELD,
             u'phoneNumber': firestore.DELETE_FIELD,
+            u'isAssigned': False,
         })
 
 
@@ -94,14 +99,16 @@ def change_title(uid, id, title):
 
 
 def change_reminder():
-    title, id, uid = request.json['title'], request.json['id'], request.json['uid']
-    date = request.json.get('date')
-    time = request.json.get('time')
-    email = request.json.get('email')
-    phone_number = request.json.get('phone_number')
-    print(email, phone_number)
+    # Items that exist
+    title, id, uid = request.json['title'], request.json[
+        'id'], request.json['uid']
+
+    # Items that might not exist
+    date, time, email, phone_number = request.json.get('date'), request.json.get(
+        'time'), request.json.get('email'), request.json.get('phone_number')
 
     change_title(uid, id, title)
+
     if date and time:
         add_date_and_time(uid, id, date, time)
     elif date:
