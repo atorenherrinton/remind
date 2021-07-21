@@ -59,9 +59,11 @@ const AssignReminderDialog = ({ date, email, phoneNumber }) => {
     sendReminderEmail(
       reminder.date,
       displayDate,
+      reminder.id,
       reminder.email,
       name,
-      reminder.title
+      reminder.title,
+      uid
     );
     dispatch(setIsAssignReminderDialogOpen());
     dispatch(setToggleMoreOptions());

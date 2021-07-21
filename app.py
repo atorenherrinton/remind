@@ -85,6 +85,7 @@ def add_assignment_email(uid, id, email):
             u'email': email,
             u'phoneNumber': firestore.DELETE_FIELD,
             u'isAssigned': True,
+            u'visibility': u'public'
         })
 
 
@@ -103,6 +104,7 @@ def remove_assignment(uid, id):
             u'email': firestore.DELETE_FIELD,
             u'phoneNumber': firestore.DELETE_FIELD,
             u'isAssigned': False,
+            u'visibility': u'private'
         })
 
 
@@ -191,8 +193,8 @@ def set_reminder_completed():
 
 
 def send_reminder_email():
-    email, name, title = request.json[
-        'email'], request.json['name'], request.json['title']
+    email, id, name, title, uid = request.json[
+        'email'], request.json['id'], request.json['name'], request.json['title'], request.json['uid']
     date = request.json.get('date')
     display_date = request.json.get('display_date')
 
@@ -202,7 +204,9 @@ def send_reminder_email():
     )
     message.dynamic_template_data = {'name': name, 'reminder': {
         'title': title,
-        'date': display_date},
+        'date': display_date,
+        'id': id,
+    }, 'uid': uid
     }
     if date:
         message.send_at = round(dp.parse(date).timestamp())
@@ -234,6 +238,18 @@ utils = {
 def firebase():
     action = request.json['action']
     return {'result': utils[action]()}
+
+
+@ app.route('/sendgrid', methods=['GET'])
+def send_reminder_email():
+    id = request.args.get('id')
+    uid = request.args.get('uid')
+    print(id, uid)
+    db.collection(u'users').document(uid).collection(
+        u'reminders').document(id).update({
+            u'isCompleted': True
+        })
+    return 'Congratulations, you have completed the reminder!'
 
 
 @ app.route('/')

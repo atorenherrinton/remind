@@ -144,14 +144,16 @@ export const loadReminders = (whichReminders, uid) => {
     });
 };
 
-export const sendReminderEmail = (date, displayDate, email, name, title) => {
+export const sendReminderEmail = (date, displayDate, id, email, name, title,uid) => {
   const data = {
     action: "send_reminder_email",
     date: date,
     display_date: displayDate,
+    id: id,
     email: email,
     name: name,
     title: title,
+    uid: uid,
   };
 
   return fetch("http://127.0.0.1:5000/actions", {

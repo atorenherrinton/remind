@@ -31,7 +31,7 @@ const App = () => {
   useEffect(() => {
     const cachedUser = JSON.parse(localStorage.getItem("user"));
     const cachedName = JSON.parse(localStorage.getItem("name"));
-    console.log(cachedUser,cachedName)
+    console.log(cachedUser, cachedName);
 
     if (cachedUser) {
       dispatch(setUid(cachedUser));
