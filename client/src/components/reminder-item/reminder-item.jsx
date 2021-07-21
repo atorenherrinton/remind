@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Fragment, useState } from "react";
-import { setReminderCompleted } from "../../firebase/firebase-actions";
+import { setReminderCompleted } from "../../utils/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUid } from "../../slices/authenticate.slice";
 import {

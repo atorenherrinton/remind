@@ -1,5 +1,28 @@
 /** @format */
 
+export const addUserToDatabase = (name, uid) => {
+  const data = {
+    action: "add_user_to_database",
+    name: name,
+    uid: uid,
+  };
+
+  fetch("http://127.0.0.1:5000/actions", {
+    method: "POST", // or 'PUT'
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("add_user_to_database:", data.result);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+};
+
 export const addReminder = (title, uid, whichReminders) => {
   const data = {
     action: "add_reminder",
@@ -8,7 +31,7 @@ export const addReminder = (title, uid, whichReminders) => {
     which_reminders: whichReminders,
   };
 
-  fetch("http://127.0.0.1:5000/firebase", {
+  fetch("http://127.0.0.1:5000/actions", {
     method: "POST", // or 'PUT'
     headers: {
       "Content-Type": "application/json",
@@ -37,7 +60,7 @@ export const changeReminder = (reminder, uid) => {
     uid: uid,
   };
 
-  fetch("http://127.0.0.1:5000/firebase", {
+  fetch("http://127.0.0.1:5000/actions", {
     method: "POST", // or 'PUT'
     headers: {
       "Content-Type": "application/json",
@@ -60,7 +83,7 @@ export const deleteReminder = (id, uid) => {
     uid: uid,
   };
 
-  fetch("http://127.0.0.1:5000/firebase", {
+  fetch("http://127.0.0.1:5000/actions", {
     method: "POST", // or 'PUT'
     headers: {
       "Content-Type": "application/json",
@@ -76,6 +99,28 @@ export const deleteReminder = (id, uid) => {
     });
 };
 
+export const loadName = (uid) => {
+  const data = {
+    action: "load_name",
+    uid: uid,
+  };
+
+  return fetch("http://127.0.0.1:5000/actions", {
+    method: "POST", // or 'PUT'
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      return data.result;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+};
+
 export const loadReminders = (whichReminders, uid) => {
   const data = {
     action: "load_reminders",
@@ -83,7 +128,33 @@ export const loadReminders = (whichReminders, uid) => {
     uid: uid,
   };
 
-  return fetch("http://127.0.0.1:5000/firebase", {
+  return fetch("http://127.0.0.1:5000/actions", {
+    method: "POST", // or 'PUT'
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      return data.result;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+};
+
+export const sendReminderEmail = (date, displayDate, email, name, title) => {
+  const data = {
+    action: "send_reminder_email",
+    date: date,
+    display_date: displayDate,
+    email: email,
+    name: name,
+    title: title,
+  };
+
+  return fetch("http://127.0.0.1:5000/actions", {
     method: "POST", // or 'PUT'
     headers: {
       "Content-Type": "application/json",
@@ -107,7 +178,7 @@ export const setReminderCompleted = (id, isCompleted, uid) => {
     uid: uid,
   };
 
-  fetch("http://127.0.0.1:5000/firebase", {
+  fetch("http://127.0.0.1:5000/actions", {
     method: "POST", // or 'PUT'
     headers: {
       "Content-Type": "application/json",
@@ -121,4 +192,10 @@ export const setReminderCompleted = (id, isCompleted, uid) => {
     .catch((error) => {
       console.error("Error:", error);
     });
+};
+
+export const validateEmail = (email) => {
+  const re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
 };

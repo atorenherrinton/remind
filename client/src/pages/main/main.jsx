@@ -85,6 +85,7 @@ const Main = () => {
           });
       }
     };
+
     loadReminders();
   });
 

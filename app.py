@@ -1,10 +1,15 @@
 from datetime import datetime
+import dateutil.parser as dp
 from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 import json
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+import os
+
 
 app = Flask(__name__, static_folder='client/build', static_url_path='')
 app.debug = True
@@ -13,6 +18,14 @@ CORS(app)
 cred = credentials.Certificate('sdk/remind-6aa6f-854bbc7d7beb.json')
 firebase_admin.initialize_app(cred)
 db = firestore.client()
+
+
+def add_user_to_database():
+    name, uid = request.json['name'], request.json['uid']
+    db.collection(u'users').document(uid).set({
+        u'name': name,
+    })
+    return 'successfully added user to firestore'
 
 
 def add_reminder():
@@ -131,6 +144,16 @@ def delete_reminder():
     return 'successfully deleted reminder in firestore'
 
 
+def load_name():
+    uid = request.json['uid']
+    doc_ref = db.collection(u'users').document(uid)
+    doc = doc_ref.get()
+    if doc.exists:
+        return doc.to_dict()
+    else:
+        return 'No such document!'
+
+
 def load_reminders():
     uid, which_reminders = request.json['uid'], request.json['which_reminders']
     reminders = []
@@ -167,19 +190,50 @@ def set_reminder_completed():
     return 'successfully changed completion status of reminder in firestore'
 
 
-firebase_actions = {
+def send_reminder_email():
+    email, name, title = request.json[
+        'email'], request.json['name'], request.json['title']
+    date = request.json.get('date')
+    display_date = request.json.get('display_date')
+
+    message = Mail(
+        from_email='remindtest123@gmail.com',
+        to_emails=email,
+    )
+    message.dynamic_template_data = {'name': name, 'reminder': {
+        'title': title,
+        'date': display_date},
+    }
+    if date:
+        message.send_at = round(dp.parse(date).timestamp())
+    message.template_id = 'd-a084c8491acd4131be614bf54a6c90c1'
+
+    try:
+        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+        response = sg.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+    except Exception as e:
+        print(e.message)
+
+
+utils = {
+    "add_user_to_database": add_user_to_database,
     "add_reminder": add_reminder,
     "change_reminder": change_reminder,
     "delete_reminder": delete_reminder,
+    "load_name": load_name,
     "load_reminders": load_reminders,
+    "send_reminder_email": send_reminder_email,
     "set_reminder_completed": set_reminder_completed,
 }
 
 
-@ app.route('/firebase', methods=['POST'])
+@ app.route('/actions', methods=['POST'])
 def firebase():
     action = request.json['action']
-    return {'result': firebase_actions[action]()}
+    return {'result': utils[action]()}
 
 
 @ app.route('/')

@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useState } from "react";
-import { addReminder } from "../../firebase/firebase-actions";
+import { addReminder } from "../../utils/utils";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import { selectUid } from "../../slices/authenticate.slice";

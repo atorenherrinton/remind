@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import Authenticate from "./pages/authenticate/authenticate";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import Main from "./pages/main/main";
-import { setUid, selectUid } from "./slices/authenticate.slice";
+import { setUid, selectUid, setName } from "./slices/authenticate.slice";
 import { useDispatch, useSelector } from "react-redux";
 
 const App = () => {
@@ -30,8 +30,14 @@ const App = () => {
 
   useEffect(() => {
     const cachedUser = JSON.parse(localStorage.getItem("user"));
+    const cachedName = JSON.parse(localStorage.getItem("name"));
+    console.log(cachedUser,cachedName)
+
     if (cachedUser) {
-      dispatch(setUid(cachedUser.uid));
+      dispatch(setUid(cachedUser));
+    }
+    if (cachedName) {
+      dispatch(setName(cachedName));
     }
   }, [dispatch]);
 

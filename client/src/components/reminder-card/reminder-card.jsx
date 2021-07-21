@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import {
   changeReminder,
   deleteReminder,
-} from "../../firebase/firebase-actions";
+} from "../../utils/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUid } from "../../slices/authenticate.slice";
 import {

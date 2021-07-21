@@ -2,12 +2,13 @@
 
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { loadName } from "../../utils/utils";
 import {
   selectEmail,
   selectErrorMessage,
-  setEmail,
   setErrorMessage,
   setIsNewUser,
+  setName,
   setUid,
 } from "../../slices/authenticate.slice";
 import Avatar from "@material-ui/core/Avatar";
@@ -18,6 +19,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import clsx from "clsx";
 import Divider from "@material-ui/core/Divider";
+import EmailInput from "../email-input/email-input";
 import ErrorAlert from "../error-alert/error-alert";
 import firebase from "../../firebase/firebase";
 import GoogleSignInButton from "../google-signin-button/google-signin-button";
@@ -27,7 +29,6 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import FormControl from "@material-ui/core/FormControl";
 import { makeStyles } from "@material-ui/core/styles";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
-import TextField from "@material-ui/core/TextField";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
@@ -67,7 +68,11 @@ const SignIn = () => {
         // Signed in
         const user = userCredential.user;
         dispatch(setUid(user.uid));
-        localStorage.setItem("user", JSON.stringify(user));
+        loadName(user.uid).then((result) => {
+          dispatch(setName(result.name));
+          localStorage.setItem("name", JSON.stringify(result.name));
+        });
+        localStorage.setItem("user", JSON.stringify(user.uid));
       })
       .catch((error) => {
         dispatch(setErrorMessage(error.message));
@@ -85,17 +90,7 @@ const SignIn = () => {
         />
         <Divider role="divider" />
         <CardContent className={classes.content} role="card-content">
-          <TextField
-            onChange={(event) => {
-              dispatch(setEmail(event.target.value));
-            }}
-            id="email-input"
-            fullWidth
-            label="Email"
-            role="email-input"
-            value={email}
-            variant="outlined"
-          />
+          <EmailInput />
           <FormControl
             className={
               (clsx(classes.margin, classes.textField), classes.password)

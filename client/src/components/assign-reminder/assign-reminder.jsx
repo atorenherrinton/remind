@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { validateEmail } from "../../utils/utils";
 import { setIsButtonDisabled } from "../../slices/reminder-card.slice";
 import {
   addEmail,
@@ -92,38 +93,33 @@ const AssignReminderForm = (props) => {
   const dispatch = useDispatch();
   const [isReminderAssigned, setIsReminderAssigned] = useState(true);
   const [email, setEmail] = useState(props.email);
-  const [inputError, setInputError] = useState(false);
+  const [validationError, setValidationError] = useState(false);
   const [option, setOption] = useState("Email Address");
   const [phoneNumber, setPhoneNumber] = useState(props.phoneNumber);
 
   const resetButton = () => {
     dispatch(setIsButtonDisabled(false));
   };
-  const resetInputError = () => {
-    if (inputError) setInputError(false);
+  const resetValidationError = () => {
+    if (validationError) setValidationError(false);
   };
 
-  const validateEmail = () => {
-    const re =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-  };
   const validatePhoneNumber = () => {
     return phoneNumber.replace(/\(|\)|-|\s/g, "").length < 10;
   };
 
   const validate = () => {
     if (option === "Email Address") {
-      if (validateEmail()) {
+      if (validateEmail(email)) {
         dispatch(addEmail(email));
         setIsReminderAssigned(true);
         resetButton();
       } else {
-        setInputError(true);
+        setValidationError(true);
       }
     } else {
       if (validatePhoneNumber()) {
-        setInputError(true);
+        setValidationError(true);
       } else {
         setEmail("");
         dispatch(addPhoneNumber(phoneNumber));
@@ -135,13 +131,13 @@ const AssignReminderForm = (props) => {
 
   const handleSetEmail = (event) => {
     const value = event.target.value;
-    resetInputError();
+    resetValidationError();
     setEmail(value);
   };
 
   const handleSetPhoneNumber = (event) => {
     const value = event.target.value;
-    resetInputError();
+    resetValidationError();
     setPhoneNumber(value);
   };
 
@@ -220,9 +216,9 @@ const AssignReminderForm = (props) => {
             {option === "Email Address" ? (
               <TextField
                 className={classes.input}
-                error={inputError}
+                error={validationError}
                 helperText={
-                  inputError ? "Please enter a valid email address" : null
+                  validationError ? "Please enter a valid email address" : null
                 }
                 id="assign-textfield"
                 onChange={handleSetEmail}
@@ -234,7 +230,7 @@ const AssignReminderForm = (props) => {
             ) : (
               <FormControl className={classes.input}>
                 <Input
-                  error={inputError}
+                  error={validationError}
                   helper
                   id="assign-textfield"
                   inputComponent={TextMaskCustom}
@@ -244,7 +240,7 @@ const AssignReminderForm = (props) => {
                   type="text"
                   value={phoneNumber}
                 />
-                {inputError ? (
+                {validationError ? (
                   <FormHelperText error id="phone-error">
                     Please enter a valid phone number
                   </FormHelperText>

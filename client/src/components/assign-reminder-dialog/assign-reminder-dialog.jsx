@@ -2,7 +2,7 @@
 
 import React, { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUid } from "../../slices/authenticate.slice";
+import { selectName, selectUid } from "../../slices/authenticate.slice";
 import {
   selectIsAssignReminderDialogOpen,
   setIsAssignReminderDialogOpen,
@@ -11,7 +11,7 @@ import {
   selectReminder,
   setToggleMoreOptions,
 } from "../../slices/reminders.slice";
-import { changeReminder } from "../../firebase/firebase-actions";
+import { changeReminder, sendReminderEmail } from "../../utils/utils";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -46,6 +46,7 @@ const AssignReminderDialog = ({ date, email, phoneNumber }) => {
   const isAssignReminderDialogOpen = useSelector(
     selectIsAssignReminderDialogOpen
   );
+  const name = useSelector(selectName);
   const reminder = useSelector(selectReminder);
   const uid = useSelector(selectUid);
 
@@ -55,6 +56,13 @@ const AssignReminderDialog = ({ date, email, phoneNumber }) => {
 
   const handleSaveReminder = () => {
     changeReminder(reminder, uid);
+    sendReminderEmail(
+      reminder.date,
+      displayDate,
+      reminder.email,
+      name,
+      reminder.title
+    );
     dispatch(setIsAssignReminderDialogOpen());
     dispatch(setToggleMoreOptions());
   };
