@@ -8,7 +8,7 @@ export const addUserToDatabase = (name, uid) => {
   };
 
   fetch("http://127.0.0.1:5000/actions", {
-    method: "POST", // or 'PUT'
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
@@ -32,7 +32,7 @@ export const addReminder = (title, uid, whichReminders) => {
   };
 
   fetch("http://127.0.0.1:5000/actions", {
-    method: "POST", // or 'PUT'
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
@@ -61,7 +61,7 @@ export const changeReminder = (reminder, uid) => {
   };
 
   fetch("http://127.0.0.1:5000/actions", {
-    method: "POST", // or 'PUT'
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
@@ -84,7 +84,7 @@ export const deleteReminder = (id, uid) => {
   };
 
   fetch("http://127.0.0.1:5000/actions", {
-    method: "POST", // or 'PUT'
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
@@ -106,7 +106,7 @@ export const loadName = (uid) => {
   };
 
   return fetch("http://127.0.0.1:5000/actions", {
-    method: "POST", // or 'PUT'
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
@@ -129,7 +129,7 @@ export const loadReminders = (whichReminders, uid) => {
   };
 
   return fetch("http://127.0.0.1:5000/actions", {
-    method: "POST", // or 'PUT'
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
@@ -144,7 +144,15 @@ export const loadReminders = (whichReminders, uid) => {
     });
 };
 
-export const sendReminderEmail = (date, displayDate, id, email, name, title,uid) => {
+export const sendReminderEmail = (
+  date,
+  displayDate,
+  id,
+  email,
+  name,
+  title,
+  uid
+) => {
   const data = {
     action: "send_reminder_email",
     date: date,
@@ -157,7 +165,7 @@ export const sendReminderEmail = (date, displayDate, id, email, name, title,uid)
   };
 
   return fetch("http://127.0.0.1:5000/actions", {
-    method: "POST", // or 'PUT'
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
@@ -181,7 +189,7 @@ export const setReminderCompleted = (id, isCompleted, uid) => {
   };
 
   fetch("http://127.0.0.1:5000/actions", {
-    method: "POST", // or 'PUT'
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
@@ -200,4 +208,15 @@ export const validateEmail = (email) => {
   const re =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
+};
+
+export const validateName = (name) => {
+  return /^[A-Za-z\s-]+[a-z]$/.test(name);
+};
+
+export const validatePassword = (password) => {
+  if (!password) {
+    return false;
+  }
+  return true;
 };

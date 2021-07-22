@@ -1,14 +1,16 @@
 /** @format */
 
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loadName } from "../../utils/utils";
+import { loadName, validateEmail, validatePassword } from "../../utils/utils";
 import {
   selectEmail,
   selectErrorMessage,
+  selectPassword,
+  setEmailValidationError,
   setErrorMessage,
-  setIsNewUser,
   setName,
+  setPasswordValidationError,
   setUid,
 } from "../../slices/authenticate.slice";
 import Avatar from "@material-ui/core/Avatar";
@@ -17,20 +19,14 @@ import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
-import clsx from "clsx";
+import ChangeAuthButton from "../change-auth-button/change-auth-button";
 import Divider from "@material-ui/core/Divider";
 import EmailInput from "../email-input/email-input";
 import ErrorAlert from "../error-alert/error-alert";
 import firebase from "../../firebase/firebase";
 import GoogleSignInButton from "../google-signin-button/google-signin-button";
-import IconButton from "@material-ui/core/IconButton";
-import InputLabel from "@material-ui/core/InputLabel";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import FormControl from "@material-ui/core/FormControl";
 import { makeStyles } from "@material-ui/core/styles";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import PasswordInput from "../password-input/password-input";
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -57,26 +53,37 @@ const SignIn = () => {
   const dispatch = useDispatch();
   const email = useSelector(selectEmail);
   const errorMessage = useSelector(selectErrorMessage);
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const password = useSelector(selectPassword);
 
   const handleSignIn = () => {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        dispatch(setUid(user.uid));
-        loadName(user.uid).then((result) => {
-          dispatch(setName(result.name));
-          localStorage.setItem("name", JSON.stringify(result.name));
+    const validatedEmail = validateEmail(email);
+    const validatedPassword = validatePassword(password);
+
+    if (validatedEmail && validatedPassword) {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          dispatch(setUid(user.uid));
+          loadName(user.uid).then((result) => {
+            dispatch(setName(result.name));
+            localStorage.setItem("name", JSON.stringify(result.name));
+          });
+          localStorage.setItem("user", JSON.stringify(user.uid));
+        })
+        .catch((error) => {
+          dispatch(setErrorMessage(error.message));
         });
-        localStorage.setItem("user", JSON.stringify(user.uid));
-      })
-      .catch((error) => {
-        dispatch(setErrorMessage(error.message));
-      });
+    } else {
+      if (!validatedEmail) {
+        dispatch(setEmailValidationError(true));
+      }
+      if (!validatedPassword) {
+        dispatch(setPasswordValidationError(true));
+      }
+    }
   };
 
   return (
@@ -91,47 +98,7 @@ const SignIn = () => {
         <Divider role="divider" />
         <CardContent className={classes.content} role="card-content">
           <EmailInput />
-          <FormControl
-            className={
-              (clsx(classes.margin, classes.textField), classes.password)
-            }
-            fullWidth
-            role="form-control"
-            variant="outlined"
-          >
-            <InputLabel
-              htmlFor="outlined-adornment-password"
-              role="input-label"
-            >
-              Password
-            </InputLabel>
-            <OutlinedInput
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => {
-                      setShowPassword(!showPassword);
-                    }}
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                    }}
-                    edge="end"
-                    role="icon-button"
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              id="password-input"
-              labelWidth={70}
-              onChange={(event) => {
-                setPassword(event.target.value);
-              }}
-              type={showPassword ? "text" : "password"}
-              value={password}
-            />
-          </FormControl>
+          <PasswordInput />
           {errorMessage ? <ErrorAlert message={errorMessage} /> : null}
           <Button
             className={classes.button}
@@ -145,18 +112,7 @@ const SignIn = () => {
             Sign in
           </Button>
           <GoogleSignInButton />
-          <Button
-            className={classes.button}
-            color="primary"
-            fullWidth
-            onClick={() => {
-              dispatch(setIsNewUser());
-            }}
-            role="sign-up-instead"
-            variant="text"
-          >
-            Don't have an account? Sign up instead
-          </Button>
+          <ChangeAuthButton />
         </CardContent>
       </Card>
     </div>

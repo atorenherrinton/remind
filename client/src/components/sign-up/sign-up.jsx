@@ -1,15 +1,24 @@
 /** @format */
 
-import React, { useState } from "react";
-import { addUserToDatabase } from "../../utils/utils";
+import React from "react";
+import {
+  addUserToDatabase,
+  validateEmail,
+  validateName,
+  validatePassword,
+} from "../../utils/utils";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectEmail,
   selectErrorMessage,
   selectName,
+  selectNameValidationError,
+  selectPassword,
+  setEmailValidationError,
   setErrorMessage,
-  setIsNewUser,
   setName,
+  setNameValidationError,
+  setPasswordValidationError,
   setUid,
 } from "../../slices/authenticate.slice";
 import Avatar from "@material-ui/core/Avatar";
@@ -18,21 +27,15 @@ import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
-import clsx from "clsx";
+import ChangeAuthButton from "../change-auth-button/change-auth-button";
 import Divider from "@material-ui/core/Divider";
 import ErrorAlert from "../error-alert/error-alert";
 import GoogleSignInButton from "../google-signin-button/google-signin-button";
-import IconButton from "@material-ui/core/IconButton";
-import InputLabel from "@material-ui/core/InputLabel";
-import InputAdornment from "@material-ui/core/InputAdornment";
 import firebase from "../../firebase/firebase";
-import FormControl from "@material-ui/core/FormControl";
 import { makeStyles } from "@material-ui/core/styles";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
 import TextField from "@material-ui/core/TextField";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import EmailInput from "../email-input/email-input";
+import PasswordInput from "../password-input/password-input";
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -63,14 +66,16 @@ const SignUp = () => {
   const email = useSelector(selectEmail);
   const errorMessage = useSelector(selectErrorMessage);
   const name = useSelector(selectName);
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [validationError, setValidationError] = useState(false);
+  const nameValidationError = useSelector(selectNameValidationError);
+  const password = useSelector(selectPassword);
+
 
   const handleSignUp = () => {
-    if (!name) {
-      setValidationError(true);
-    } else {
+    const validatedEmail = validateEmail(email);
+    const validatedName = validateName(name);
+    const validatedPassword = validatePassword(password);
+
+    if (validatedEmail && validatedName && validatedPassword) {
       firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
@@ -85,19 +90,29 @@ const SignUp = () => {
         .catch((error) => {
           dispatch(setErrorMessage(error.message));
         });
+    } else {
+      if (!validatedEmail) {
+        dispatch(setEmailValidationError(true));
+      }
+      if (!validatedName) {
+        dispatch(setNameValidationError(true));
+      }
+      if (!validatedPassword) {
+        dispatch(setPasswordValidationError(true));
+      }
     }
   };
 
   const handleSetName = (event) => {
-    if (validationError) {
-      setValidationError(false);
+    if (nameValidationError) {
+      dispatch(setNameValidationError(false));
     }
     dispatch(setName(event.target.value));
   };
 
   const handleValidateName = () => {
-    if (!name) {
-      setValidationError(true);
+    if (!validateName(name)) {
+      dispatch(setNameValidationError(true));
     }
   };
 
@@ -115,8 +130,10 @@ const SignUp = () => {
           <TextField
             autoFocus
             className={classes.nameInput}
-            error={validationError}
-            helperText={validationError ? "Please enter a name" : null}
+            error={nameValidationError}
+            helperText={
+              nameValidationError ? "Please enter a valid name" : null
+            }
             id="name-input"
             onChange={handleSetName}
             onKeyDown={handleValidateName}
@@ -127,48 +144,7 @@ const SignUp = () => {
           />
 
           <EmailInput />
-          <FormControl
-            className={
-              (clsx(classes.margin, classes.textField), classes.password)
-            }
-            fullWidth
-            role="form-control"
-            variant="outlined"
-          >
-            <InputLabel
-              htmlFor="outlined-adornment-password"
-              role="input-label"
-            >
-              Password
-            </InputLabel>
-            <OutlinedInput
-              autoComplete="off"
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => {
-                      setShowPassword(!showPassword);
-                    }}
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                    }}
-                    edge="end"
-                    role="icon-button"
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              id="outlined-adornment-password"
-              labelWidth={70}
-              onChange={(event) => {
-                setPassword(event.target.value);
-              }}
-              type={showPassword ? "text" : "password"}
-              value={password}
-            />
-          </FormControl>
+          <PasswordInput />
           {errorMessage ? <ErrorAlert message={errorMessage} /> : null}
           <Button
             className={classes.button}
@@ -181,19 +157,7 @@ const SignUp = () => {
             Sign up
           </Button>
           <GoogleSignInButton />
-          <Button
-            className={classes.button}
-            color="primary"
-            id="sign-in-instead"
-            fullWidth
-            onClick={() => {
-              dispatch(setIsNewUser());
-            }}
-            role="sign-in-instead"
-            variant="text"
-          >
-            Already have an account? Sign in instead
-          </Button>
+          <ChangeAuthButton />
         </CardContent>
       </Card>
     </div>

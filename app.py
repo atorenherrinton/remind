@@ -5,7 +5,6 @@ from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
-import json
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import os
