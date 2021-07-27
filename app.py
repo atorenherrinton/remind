@@ -5,9 +5,10 @@ from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+import os
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-import os
+from twilio.rest import Client
 
 
 app = Flask(__name__, static_folder='client/build', static_url_path='')
@@ -84,7 +85,7 @@ def add_assignment_email(uid, id, email):
             u'email': email,
             u'phoneNumber': firestore.DELETE_FIELD,
             u'isAssigned': True,
-            u'visibility': u'public'
+            u'visibility': True,
         })
 
 
@@ -94,6 +95,7 @@ def add_assignment_phone_number(uid, id, phone_number):
             u'email': firestore.DELETE_FIELD,
             u'phoneNumber': phone_number,
             u'isAssigned': True,
+            u'visibility': True,
         })
 
 
@@ -103,7 +105,7 @@ def remove_assignment(uid, id):
             u'email': firestore.DELETE_FIELD,
             u'phoneNumber': firestore.DELETE_FIELD,
             u'isAssigned': False,
-            u'visibility': u'private'
+            u'visibility': False,
         })
 
 
@@ -221,6 +223,22 @@ def send_reminder_email():
         print(e.message)
 
 
+def send_reminder_text_message():
+    id, name, phone_number, title, uid = request.json['id'], request.json[
+        'name'], request.json['phone_number'], request.json['title'], request.json['uid']
+    account_sid = os.environ['TWILIO_ACCOUNT_SID']
+    auth_token = os.environ['TWILIO_AUTH_TOKEN']
+    client = Client(account_sid, auth_token)
+
+    message = client.messages \
+                    .create(
+                        body=f'{name} wants to remind you to {title}. Have you done it? Click the link to confirm http://127.0.0.1:5000/twilio?id={id}&uid={uid}',
+                        from_='+14843809068',
+                        to=phone_number
+                    )
+    print(message.sid)
+
+
 utils = {
     "add_user_to_database": add_user_to_database,
     "add_reminder": add_reminder,
@@ -229,6 +247,7 @@ utils = {
     "load_name": load_name,
     "load_reminders": load_reminders,
     "send_reminder_email": send_reminder_email,
+    "send_reminder_text_message": send_reminder_text_message,
     "set_reminder_completed": set_reminder_completed,
 }
 
@@ -239,8 +258,8 @@ def firebase():
     return {'result': utils[action]()}
 
 
-@ app.route('/sendgrid', methods=['GET'])
-def send_reminder_email():
+@ app.route('/twilio', methods=['GET'])
+def set_reminder_completed():
     id = request.args.get('id')
     uid = request.args.get('uid')
     print(id, uid)
@@ -248,7 +267,7 @@ def send_reminder_email():
         u'reminders').document(id).update({
             u'isCompleted': True
         })
-    return 'Congratulations, you have completed the reminder!'
+    return '<h2>Your reminder was completed!</h2>'
 
 
 @ app.route('/')

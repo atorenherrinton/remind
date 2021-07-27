@@ -11,7 +11,11 @@ import {
   selectReminder,
   setToggleMoreOptions,
 } from "../../slices/reminders.slice";
-import { changeReminder, sendReminderEmail } from "../../utils/utils";
+import {
+  changeReminder,
+  sendReminderEmail,
+  sendReminderTextMessage,
+} from "../../utils/utils";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -56,15 +60,26 @@ const AssignReminderDialog = ({ date, email, phoneNumber }) => {
 
   const handleSaveReminder = () => {
     changeReminder(reminder, uid);
-    sendReminderEmail(
-      reminder.date,
-      displayDate,
-      reminder.id,
-      reminder.email,
-      name,
-      reminder.title,
-      uid
-    );
+    if (reminder.email) {
+      sendReminderEmail(
+        reminder.date,
+        displayDate,
+        reminder.id,
+        reminder.email,
+        name,
+        reminder.title,
+        uid
+      );
+    } else {
+      sendReminderTextMessage(
+        reminder.id,
+        name,
+        reminder.phoneNumber,
+        reminder.title,
+        uid
+      );
+    }
+
     dispatch(setIsAssignReminderDialogOpen());
     dispatch(setToggleMoreOptions());
   };

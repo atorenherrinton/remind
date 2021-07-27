@@ -180,6 +180,38 @@ export const sendReminderEmail = (
     });
 };
 
+export const sendReminderTextMessage = (
+  id,
+  name,
+  phoneNumber,
+  title,
+  uid
+) => {
+  const data = {
+    action: "send_reminder_text_message",
+    id: id,
+    name: name,
+    phone_number: phoneNumber,
+    title: title,
+    uid: uid,
+  };
+
+  return fetch("http://127.0.0.1:5000/actions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      return data.result;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+};
+
 export const setReminderCompleted = (id, isCompleted, uid) => {
   const data = {
     action: "set_reminder_completed",

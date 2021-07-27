@@ -25,7 +25,7 @@ const ChangeAuthButton = () => {
   const handleClick = () => {
     dispatch(setIsNewUser());
     dispatch(setEmailValidationError(false));
-    dispatch(setNameValidationError(false))
+    dispatch(setNameValidationError(false));
     dispatch(setPasswordValidationError(false));
   };
 

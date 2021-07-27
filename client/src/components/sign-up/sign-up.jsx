@@ -69,7 +69,6 @@ const SignUp = () => {
   const nameValidationError = useSelector(selectNameValidationError);
   const password = useSelector(selectPassword);
 
-
   const handleSignUp = () => {
     const validatedEmail = validateEmail(email);
     const validatedName = validateName(name);
